@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Core\JWWinBase.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="JWGUI.cpp" />
+    <ClCompile Include="Core\JWInput.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\JWShape.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\JWLine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\JWControl.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\JWButton.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\JWLabel.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="JWControlManager.cpp" />
+    <ClCompile Include="Core\JWBorder.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\JWThickBorder.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Control\JWTitleBar.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{63c6e398-8b34-4389-b248-aa94cf07b7c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Control">
+      <UniqueIdentifier>{ff58bdc3-26a4-4ffa-b5f1-d2d18512a118}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\JWCommon.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\JWWinBase.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="JWGUI.h" />
+    <ClInclude Include="Core\JWInput.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\JWShape.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\JWLine.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\JWControl.h">
+      <Filter>Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\JWButton.h">
+      <Filter>Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\JWLabel.h">
+      <Filter>Control</Filter>
+    </ClInclude>
+    <ClInclude Include="JWControlManager.h" />
+    <ClInclude Include="Core\JWBorder.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\JWThickBorder.h">
+      <Filter>Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\JWTitleBar.h">
+      <Filter>Control</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

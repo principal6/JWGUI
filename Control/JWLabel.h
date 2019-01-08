@@ -21,9 +21,7 @@ public:
 	// Draw
 	void JWLabel::Draw();
 
-	// Setter
-	void JWLabel::SetSize(D3DXVECTOR2 Size);
-
 	// Setter only
+	void JWLabel::SetSize(D3DXVECTOR2 Size);
 	void JWLabel::SetPosition(D3DXVECTOR2 Position);
 };

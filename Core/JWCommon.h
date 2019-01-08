@@ -17,7 +17,6 @@ static const DWORD D3DFVF_ALL = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 static const DWORD D3DFVF_NO_TEXTURE = D3DFVF_XYZRHW | D3DFVF_DIFFUSE;
 static const wchar_t ASSET_DIR[] = L"\\Asset\\";
 static const int MAX_PATH_LEN = 260;
-static wchar_t s_AppDir[MAX_PATH_LEN];
 
 static const DWORD s_DefaultPlainColor = D3DCOLOR_XRGB(80, 80, 80);
 static const DWORD s_DefaultDarkColor = D3DCOLOR_XRGB(40, 40, 40);
@@ -42,6 +41,18 @@ static const int MIN_WINDOW_HEIGHT = 60;
 #define JW_RELEASE(dx) if (dx) { dx->Release(); dx = nullptr; };
 #define JW_DELETE(var) if (var) { delete var; var = nullptr; };
 
+class JWCommon
+{
+protected:
+	static wchar_t ms_AppDir[MAX_PATH_LEN];
+
+public:
+	JWCommon() {};
+	virtual ~JWCommon() {};
+
+	void JWCommon::SetApplicationDir();
+};
+
 enum class JWERROR
 {
 	// Succeeded
@@ -53,15 +64,16 @@ enum class JWERROR
 	FontNotCreated,
 	ShapeNotCreated,
 	LineNotCreated,
-	WinBaseCreationFailed,
-	DirectInputCreationFailed,
+	WinBaseNotCreated,
+	DirectInputNotCreated,
 	// Control class creation failure
 	BorderNotCreated,
-	ControlManagerCreationFailed,
+	ControlManagerNotCreated,
 	ControlNotCreated, // @warning: it refers to JWControl class instance
 	LabelNotCreated,
 	SystemButtonNotCreated,
 	CommandButtonNotCreated,
+	ImageNotCreated,
 	// GUIWindow class creation failure
 	TitlebarNotcreated,
 	// Null pointer

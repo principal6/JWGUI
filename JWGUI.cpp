@@ -10,22 +10,22 @@ JWGUI::JWGUI()
 auto JWGUI::Create(WSTRING Name)->JWERROR
 {
 	// @warning: Console window is for debugging
-	// Close the console window
-	
+	// Close the console window	
 	FreeConsole();
 
 	// Get current application directory
-	GetCurrentDirectoryW(MAX_PATH_LEN, s_AppDir);
-	
+	JWCommon CommonData;
+	CommonData.SetApplicationDir();
+
 	// Create base window and initialize DirectX
 	m_WinBase = MAKE_UNIQUE(JWWinBase);
 	if (JW_FAILED(m_WinBase->Create(L"JWGUI", JW_INT2(200, 200), JW_INT2(600, 400), s_DefaultPlainColor)))
-		return JWERROR::WinBaseCreationFailed;
+		return JWERROR::WinBaseNotCreated;
 
 	// Create DirectX Input device
 	m_Input = MAKE_UNIQUE(JWInput);
 	if (JW_FAILED(m_Input->Create(m_WinBase->GethInstance(), m_WinBase->GethWnd())))
-		return JWERROR::DirectInputCreationFailed;
+		return JWERROR::DirectInputNotCreated;
 
 	// Create font
 	D3DXCreateFontW(m_WinBase->GetDevice(), 18, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
@@ -42,7 +42,7 @@ auto JWGUI::Create(WSTRING Name)->JWERROR
 	// 1. Mangage the static font object in JWControl-inherited-classes
 	m_ControlManager = MAKE_UNIQUE(JWControlManager);
 	if (JW_FAILED(m_ControlManager->Create(m_WinBase->GetDevice(), m_pFont)))
-		return JWERROR::ControlManagerCreationFailed;
+		return JWERROR::ControlManagerNotCreated;
 
 	// Create main titlebar
 	m_TitleBar = MAKE_UNIQUE(JWTitlebar);

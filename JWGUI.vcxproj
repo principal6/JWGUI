@@ -157,10 +157,12 @@
   <ItemGroup>
     <ClCompile Include="Control\JWButton.cpp" />
     <ClCompile Include="Control\JWControl.cpp" />
+    <ClCompile Include="Control\JWImage.cpp" />
     <ClCompile Include="Control\JWLabel.cpp" />
     <ClCompile Include="Control\JWThickBorder.cpp" />
     <ClCompile Include="Control\JWTitleBar.cpp" />
     <ClCompile Include="Core\JWBorder.cpp" />
+    <ClCompile Include="Core\JWCommon.cpp" />
     <ClCompile Include="Core\JWInput.cpp" />
     <ClCompile Include="Core\JWLine.cpp" />
     <ClCompile Include="Core\JWShape.cpp" />
@@ -172,6 +174,7 @@
   <ItemGroup>
     <ClInclude Include="Control\JWButton.h" />
     <ClInclude Include="Control\JWControl.h" />
+    <ClInclude Include="Control\JWImage.h" />
     <ClInclude Include="Control\JWLabel.h" />
     <ClInclude Include="Control\JWThickBorder.h" />
     <ClInclude Include="Control\JWTitleBar.h" />

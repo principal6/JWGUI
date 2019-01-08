@@ -34,6 +34,12 @@
     <ClCompile Include="Control\JWTitleBar.cpp">
       <Filter>Control</Filter>
     </ClCompile>
+    <ClCompile Include="Control\JWImage.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\JWCommon.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -77,6 +83,9 @@
       <Filter>Control</Filter>
     </ClInclude>
     <ClInclude Include="Control\JWTitleBar.h">
+      <Filter>Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Control\JWImage.h">
       <Filter>Control</Filter>
     </ClInclude>
   </ItemGroup>

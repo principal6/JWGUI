@@ -32,6 +32,7 @@ public:
 		Button,
 		ThickBorder,
 		TitleBar,
+		Image,
 	};
 	
 	enum class CONTROL_STATE

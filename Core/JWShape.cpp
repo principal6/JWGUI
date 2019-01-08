@@ -54,6 +54,54 @@ void JWShape::MakeRectangle(D3DXVECTOR2 Size, DWORD Color)
 	UpdateIndexBuffer();
 }
 
+void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName)
+{
+	m_Type = Type::Rectangle;
+	m_Size = Size;
+
+	// Make rectangle from (0, 0) to (Size.x, Size.y)
+	m_Vertices.push_back(VertexShape(0, 0, 0, 0));
+	m_Vertices.push_back(VertexShape(Size.x, 0, 1, 0));
+	m_Vertices.push_back(VertexShape(0, Size.y, 0, 1));
+	m_Vertices.push_back(VertexShape(Size.x, Size.y, 1, 1));
+	m_Indices.push_back(Index3(0, 1, 3));
+	m_Indices.push_back(Index3(0, 3, 2));
+
+	CreateVertexBuffer();
+	CreateIndexBuffer();
+	UpdateVertexBuffer();
+	UpdateIndexBuffer();
+
+	CreateTexture(TextureFileName);
+}
+
+void JWShape::CreateTexture(WSTRING FileName)
+{
+	if (m_pTexture)
+	{
+		m_pTexture->Release();
+		m_pTexture = nullptr;
+	}
+
+	WSTRING NewFileName;
+	NewFileName = ms_AppDir;
+	NewFileName += ASSET_DIR;
+	NewFileName += FileName;
+
+	D3DXIMAGE_INFO tempImageInfo;
+	if (FAILED(D3DXCreateTextureFromFileEx(m_pDevice, NewFileName.c_str(), 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
+		D3DX_DEFAULT, D3DX_DEFAULT, 0, &tempImageInfo, nullptr, &m_pTexture)))
+		return;
+
+	D3DXVECTOR2 tempSize;
+	tempSize.x = static_cast<float>(tempImageInfo.Width);
+	tempSize.y = static_cast<float>(tempImageInfo.Height);
+
+	// Set the image size to the file info's size because the size was not specified when JWShape was created
+	if (m_Size.x == 0 && m_Size.y == 0)
+		SetSize(tempSize);
+}
+
 void JWShape::ClearVertexAndIndexData()
 {
 	m_Vertices.clear();
@@ -122,8 +170,21 @@ void JWShape::Draw() const
 	m_pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	m_pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	
-	// No texture
-	m_pDevice->SetTexture(0, nullptr);
+	if (m_pTexture)
+	{
+		// Texture exists
+		m_pDevice->SetTexture(0, m_pTexture);
+
+		// Texture alpha * Diffuse color alpha
+		m_pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		m_pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		m_pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+	}
+	else
+	{
+		// No texture
+		m_pDevice->SetTexture(0, nullptr);
+	}
 
 	m_pDevice->SetStreamSource(0, m_pVertexBuffer, 0, sizeof(VertexShape));
 	m_pDevice->SetFVF(D3DFVF_ALL);

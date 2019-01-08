@@ -3,6 +3,7 @@
 // Static member variable declaration
 const float JWTitlebar::TITLEBAR_HEIGHT = 24.0f;
 const float JWTitlebar::ICON_WIDTH = 24.0f;
+const float JWTitlebar::ICON_PAD = 4.0f;
 const float JWTitlebar::SYSBUTTON_WIDTH = 28.0f;
 
 JWTitlebar::JWTitlebar()
@@ -37,6 +38,10 @@ auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
 	if (JW_FAILED(m_SysExit->Create(pDevice, pFont)))
 		return JWERROR::SystemButtonNotCreated;
 
+	m_Icon = MAKE_UNIQUE(JWImage);
+	if (JW_FAILED(m_Icon->Create(pDevice, pFont)))
+		return JWERROR::ImageNotCreated;
+
 	m_ControlType = CONTROL_TYPE::TitleBar;
 	m_ControlState = CONTROL_STATE::Normal;
 
@@ -48,7 +53,7 @@ void JWTitlebar::Make(JW_INT2 WindowSize, WSTRING WindowName)
 	m_BG->MakeRectangle(D3DXVECTOR2(0, 0), s_DefaultDarkColor);
 
 	m_Label->MakeLabel(WindowName, D3DXVECTOR2(0, 0), s_DefualtFontColor, s_TransparentColor);
-	m_Label->SetPosition(D3DXVECTOR2(ICON_WIDTH, 0));
+	m_Label->SetPosition(D3DXVECTOR2(ICON_WIDTH + 2, 1));
 	m_Label->SetAlignmentVert(ALIGNMENT_VERT::Center);
 
 	m_SysMin->MakeSystemButton(JWButton::BUTTON_TYPE::SystemMinimize, D3DXVECTOR2(SYSBUTTON_WIDTH, TITLEBAR_HEIGHT));
@@ -56,6 +61,8 @@ void JWTitlebar::Make(JW_INT2 WindowSize, WSTRING WindowName)
 	m_SysMax->MakeSystemButton(JWButton::BUTTON_TYPE::SystemMaximize, D3DXVECTOR2(SYSBUTTON_WIDTH, TITLEBAR_HEIGHT));
 
 	m_SysExit->MakeSystemButton(JWButton::BUTTON_TYPE::SystemExit, D3DXVECTOR2(SYSBUTTON_WIDTH, TITLEBAR_HEIGHT));
+
+	m_Icon->MakeImage(L"icon.png", D3DXVECTOR2(ICON_WIDTH - ICON_PAD * 2, ICON_WIDTH - ICON_PAD * 2));
 
 	UpdateSize(WindowSize);
 }
@@ -84,6 +91,8 @@ void JWTitlebar::UpdateSize(JW_INT2 WindowSize)
 
 	m_SysExit->SetPosition(D3DXVECTOR2(LabelSizeX + SYSBUTTON_WIDTH * 2, 0));
 
+	m_Icon->SetPosition(D3DXVECTOR2(ICON_PAD, ICON_PAD));
+
 	// Update border
 	UpdateBorder();
 
@@ -104,6 +113,7 @@ void JWTitlebar::Draw()
 	m_SysMin->Draw();
 	m_SysMax->Draw();
 	m_SysExit->Draw();
+	m_Icon->Draw();
 }
 
 void JWTitlebar::UpdateControlStates(JWWinBase* pBase)
@@ -113,6 +123,7 @@ void JWTitlebar::UpdateControlStates(JWWinBase* pBase)
 	m_SysMin->UpdateControlState(pBase);
 	m_SysMax->UpdateControlState(pBase);
 	m_SysExit->UpdateControlState(pBase);
+	m_Icon->UpdateControlState(pBase);
 
 	if (m_SysMin->GetControlState() == JWControl::CONTROL_STATE::Clicked)
 	{

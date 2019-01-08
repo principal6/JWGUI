@@ -1,14 +1,16 @@
 #pragma once
 
 #include "../Core/JWWinBase.h"
-#include "../Control/JWButton.h"
-#include "../Control/JWLabel.h"
+#include "JWButton.h"
+#include "JWLabel.h"
+#include "JWImage.h"
 
 class JWTitlebar final : public JWControl
 {
 private:
 	static const float TITLEBAR_HEIGHT;
 	static const float ICON_WIDTH;
+	static const float ICON_PAD;
 	static const float SYSBUTTON_WIDTH;
 
 	UNIQUE_PTR<JWButton> m_SysExit;
@@ -16,6 +18,7 @@ private:
 	UNIQUE_PTR<JWButton> m_SysMax;
 	UNIQUE_PTR<JWLabel> m_Label;
 	UNIQUE_PTR<JWShape> m_BG;
+	UNIQUE_PTR<JWImage> m_Icon;
 
 	bool m_bOnSystemMinimize;
 	bool m_bOnSystemMaximize;

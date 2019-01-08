@@ -2,7 +2,7 @@
 
 #include "JWCommon.h"
 
-class JWShape
+class JWShape : public JWCommon
 {
 public:
 	enum class Type
@@ -19,8 +19,12 @@ protected:
 
 		VertexShape() :
 			x(0), y(0), z(0), rhw(1), color(0xFFFFFFFF), u(0), v(0) {};
+		VertexShape(float _x, float _y) :
+			x(_x), y(_y), z(0), rhw(1), color(0xFFFFFFFF), u(0), v(0) {};
 		VertexShape(float _x, float _y, DWORD _color) :
 			x(_x), y(_y), z(0), rhw(1), color(_color), u(0), v(0) {};
+		VertexShape(float _x, float _y, float _u, float _v) :
+			x(_x), y(_y), z(0), rhw(1), color(0xFFFFFFFF), u(_u), v(_v) {};
 		VertexShape(float _x, float _y, float _u, float _v, DWORD _color) :
 			x(_x), y(_y), z(0), rhw(1), color(_color), u(_u), v(_v) {};
 		VertexShape(float _x, float _y, float _z, float _rhw, DWORD _color, float _u, float _v) :
@@ -59,6 +63,8 @@ protected:
 	virtual void JWShape::UpdateVertexBuffer();
 	virtual void JWShape::UpdateIndexBuffer();
 
+	virtual void JWShape::CreateTexture(WSTRING FileName);
+
 public:
 	JWShape();
 	virtual ~JWShape() {};
@@ -69,6 +75,7 @@ public:
 
 	// Make
 	virtual void JWShape::MakeRectangle(D3DXVECTOR2 Size, DWORD Color);
+	virtual void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName);
 
 	// Draw
 	virtual void JWShape::Draw() const;

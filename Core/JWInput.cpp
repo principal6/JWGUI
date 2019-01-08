@@ -27,13 +27,13 @@ auto JWInput::Create(HINSTANCE hInstance, HWND hWnd)->JWERROR
 	m_hWnd = hWnd;
 
 	if (FAILED(DirectInput8Create(m_hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void **)&m_DI8, nullptr)))
-		return JWERROR::DirectInputCreationFailed;
+		return JWERROR::DirectInputNotCreated;
 
 	if (FAILED(CreateMouseDevice(DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
-		return JWERROR::DirectInputCreationFailed;
+		return JWERROR::DirectInputNotCreated;
 
 	if (FAILED(CreateKeyboardDevice(DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
-		return JWERROR::DirectInputCreationFailed;
+		return JWERROR::DirectInputNotCreated;
 
 	return JWERROR::Ok;
 }

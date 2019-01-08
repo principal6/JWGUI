@@ -3,6 +3,7 @@
 #include "Core/JWWinBase.h"
 #include "Control/JWLabel.h"
 #include "Control/JWButton.h"
+#include "Control/JWImage.h"
 
 class JWControlManager final : public JWControl
 {

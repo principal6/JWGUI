@@ -1,21 +1,23 @@
 #include "JWThickBorder.h"
 
+using namespace JW_GUI;
+
 JWThickBorder::JWThickBorder()
 {
 	m_bCanResizeWindow = false;
 }
 
-auto JWThickBorder::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
+auto JWThickBorder::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 {
 	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
-		return JWERROR::ControlNotCreated;
+		return Error::ControlNotCreated;
 
 	m_ControlType = CONTROL_TYPE::ThickBorder;
 	m_ControlState = CONTROL_STATE::Normal;
 
 	SetDrawBorder(true);
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
 void JWThickBorder::MakeThickBorder(D3DXVECTOR2 Size)
@@ -62,7 +64,7 @@ void JWThickBorder::SetRegion()
 		D3DXVECTOR2(2.0f, 2.0f)); // bottom-left
 }
 
-auto JWThickBorder::IsMouseOnRegion(JW_INT2 MousePosition)->bool
+auto JWThickBorder::IsMouseOnRegion(Int2 MousePosition)->bool
 {
 	bool Result = false;
 
@@ -167,9 +169,9 @@ void JWThickBorder::StopResizeWindow()
 
 void JWThickBorder::ResizeWindow(JWWinBase* pBase)
 {
-	JW_INT2 MovedPos = pBase->GetMousePositionScreen() - pBase->GetCapturedMousePositionScreen();
-	JW_INT2 NewSize = pBase->GetCapturedWindowSize();
-	JW_INT2 NewPos;
+	Int2 MovedPos = pBase->GetMousePositionScreen() - pBase->GetCapturedMousePositionScreen();
+	Int2 NewSize = pBase->GetCapturedWindowSize();
+	Int2 NewPos;
 
 	switch (GetCapturedMoveID())
 	{

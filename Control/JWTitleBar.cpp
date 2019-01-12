@@ -1,5 +1,7 @@
 #include "JWTitleBar.h"
 
+using namespace JW_GUI;
+
 // Static member variable declaration
 const float JWTitlebar::TITLEBAR_HEIGHT = 24.0f;
 const float JWTitlebar::ICON_WIDTH = 24.0f;
@@ -13,46 +15,46 @@ JWTitlebar::JWTitlebar()
 	m_bOnSystemExit = false;
 }
 
-auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
+auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 {
 	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
-		return JWERROR::ControlNotCreated;
+		return Error::ControlNotCreated;
 
-	m_BG = MAKE_UNIQUE(JWShape);
+	m_BG = MAKE_UNIQUE(JWShape)();
 	if (JW_FAILED(m_BG->Create(pDevice)))
-		return JWERROR::ShapeNotCreated;
+		return Error::ShapeNotCreated;
 
-	m_Label = MAKE_UNIQUE(JWLabel);
+	m_Label = MAKE_UNIQUE(JWLabel)();
 	if (JW_FAILED(m_Label->Create(pDevice, pFont)))
-		return JWERROR::LabelNotCreated;
+		return Error::LabelNotCreated;
 
-	m_SysMin = MAKE_UNIQUE(JWButton);
+	m_SysMin = MAKE_UNIQUE(JWButton)();
 	if (JW_FAILED(m_SysMin->Create(pDevice, pFont)))
-		return JWERROR::SystemButtonNotCreated;
+		return Error::SystemButtonNotCreated;
 
-	m_SysMax = MAKE_UNIQUE(JWButton);
+	m_SysMax = MAKE_UNIQUE(JWButton)();
 	if (JW_FAILED(m_SysMax->Create(pDevice, pFont)))
-		return JWERROR::SystemButtonNotCreated;
+		return Error::SystemButtonNotCreated;
 
-	m_SysExit = MAKE_UNIQUE(JWButton);
+	m_SysExit = MAKE_UNIQUE(JWButton)();
 	if (JW_FAILED(m_SysExit->Create(pDevice, pFont)))
-		return JWERROR::SystemButtonNotCreated;
+		return Error::SystemButtonNotCreated;
 
-	m_Icon = MAKE_UNIQUE(JWImage);
+	m_Icon = MAKE_UNIQUE(JWImage)();
 	if (JW_FAILED(m_Icon->Create(pDevice, pFont)))
-		return JWERROR::ImageNotCreated;
+		return Error::ImageNotCreated;
 
 	m_ControlType = CONTROL_TYPE::TitleBar;
 	m_ControlState = CONTROL_STATE::Normal;
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
-void JWTitlebar::Make(JW_INT2 WindowSize, WSTRING WindowName)
+void JWTitlebar::Make(Int2 WindowSize, STRING WindowName)
 {
-	m_BG->MakeRectangle(D3DXVECTOR2(0, 0), s_DefaultDarkColor);
+	m_BG->MakeRectangle(D3DXVECTOR2(0, 0), JWCOLOR_DARK);
 
-	m_Label->MakeLabel(WindowName, D3DXVECTOR2(0, 0), s_DefualtFontColor, s_TransparentColor);
+	m_Label->MakeLabel(WindowName, D3DXVECTOR2(0, 0), JWCOLOR_FONT, JWCOLOR_TRANSPARENT);
 	m_Label->SetPosition(D3DXVECTOR2(ICON_WIDTH + 2, 1));
 	m_Label->SetAlignmentVert(ALIGNMENT_VERT::Center);
 
@@ -62,7 +64,7 @@ void JWTitlebar::Make(JW_INT2 WindowSize, WSTRING WindowName)
 
 	m_SysExit->MakeSystemButton(JWButton::BUTTON_TYPE::SystemExit, D3DXVECTOR2(SYSBUTTON_WIDTH, TITLEBAR_HEIGHT));
 
-	m_Icon->MakeImage(L"icon.png", D3DXVECTOR2(ICON_WIDTH - ICON_PAD * 2, ICON_WIDTH - ICON_PAD * 2));
+	m_Icon->MakeImage("icon.png", D3DXVECTOR2(ICON_WIDTH - ICON_PAD * 2, ICON_WIDTH - ICON_PAD * 2));
 
 	UpdateSize(WindowSize);
 }
@@ -73,7 +75,7 @@ void JWTitlebar::Update(JWWinBase* pBase)
 	UpdateControlStates(pBase);
 }
 
-void JWTitlebar::UpdateSize(JW_INT2 WindowSize)
+void JWTitlebar::UpdateSize(Int2 WindowSize)
 {
 	D3DXVECTOR2 NewWindowSize = D3DXVECTOR2(static_cast<float>(WindowSize.x), static_cast<float>(WindowSize.y));
 	float LabelSizeX = NewWindowSize.x - SYSBUTTON_WIDTH * 3;

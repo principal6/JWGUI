@@ -1,21 +1,23 @@
 #include "JWLabel.h"
 
-auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
+using namespace JW_GUI;
+
+auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 {
 	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
-		return JWERROR::ControlNotCreated;
+		return Error::ControlNotCreated;
 
-	m_Shape = UNIQUE_PTR<JWShape>(new JWShape);
+	m_Shape = MAKE_UNIQUE(JWShape)();
 	if (JW_FAILED(m_Shape->Create(pDevice)))
-		return JWERROR::ShapeNotCreated;
+		return Error::ShapeNotCreated;
 
 	m_ControlType = CONTROL_TYPE::Label;
 	m_ControlState = CONTROL_STATE::Normal;
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
-void JWLabel::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont, DWORD ColorBG)
+void JWLabel::MakeLabel(STRING Text, D3DXVECTOR2 Size, DWORD ColorFont, DWORD ColorBG)
 {
 	m_Size = Size;
 	m_Text = Text;

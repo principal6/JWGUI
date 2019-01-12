@@ -3,23 +3,26 @@
 #include "JWCommon.h"
 #include "JWLine.h"
 
-class JWBorder
+namespace JW_GUI
 {
-private:
-	LPDIRECT3DDEVICE9 m_pDevice;
+	class JWBorder final
+	{
+	private:
+		LPDIRECT3DDEVICE9 m_pDevice;
 
-	UNIQUE_PTR<JWLine> m_Line;
-	D3DXVECTOR2 m_Position;
-	D3DXVECTOR2 m_Size;
+		UNIQUE_PTR<JWLine> m_Line;
+		D3DXVECTOR2 m_Position;
+		D3DXVECTOR2 m_Size;
 
-public:
-	JWBorder() {};
-	~JWBorder() {};
+	public:
+		JWBorder() {};
+		~JWBorder() {};
 
-	JWERROR JWBorder::Create(LPDIRECT3DDEVICE9 pDevice);
+		auto JWBorder::Create(LPDIRECT3DDEVICE9 pDevice)->Error;
 
-	void JWBorder::MakeBorder(D3DXVECTOR2 Size);
-	void JWBorder::UpdateBorder(D3DXVECTOR2 Size);
+		void JWBorder::MakeBorder(D3DXVECTOR2 Size);
+		void JWBorder::UpdateBorder(D3DXVECTOR2 Size);
 
-	void JWBorder::Draw();
+		void JWBorder::Draw();
+	};
 };

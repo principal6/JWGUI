@@ -1,6 +1,8 @@
 #include "JWControlManager.h"
 
-auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
+using namespace JW_GUI;
+
+auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 {
 	return JWControl::Create(pDevice, pFont);
 }

@@ -37,8 +37,14 @@
     <ClCompile Include="Control\JWImage.cpp">
       <Filter>Control</Filter>
     </ClCompile>
-    <ClCompile Include="Core\JWCommon.cpp">
+    <ClCompile Include="Dependency\tinyxml2.cpp">
+      <Filter>Dependency</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\JWFont.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\BMFontParser.cpp">
+      <Filter>Dependency</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +53,9 @@
     </Filter>
     <Filter Include="Control">
       <UniqueIdentifier>{ff58bdc3-26a4-4ffa-b5f1-d2d18512a118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependency">
+      <UniqueIdentifier>{7feeccc6-8c37-444d-bb58-36f7b0683287}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +96,15 @@
     </ClInclude>
     <ClInclude Include="Control\JWImage.h">
       <Filter>Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\tinyxml2.h">
+      <Filter>Dependency</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\JWFont.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\BMFontParser.h">
+      <Filter>Dependency</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

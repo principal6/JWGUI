@@ -2,86 +2,90 @@
 
 #include "JWCommon.h"
 
-class JWWinBase final
+namespace JW_GUI
 {
-private:
-	static bool ms_onMouseMove;
-	static bool ms_onMouseDoubleCliked;
-	static bool ms_bMouseLBTNDown;
-	static bool ms_IsWindowCaptured;
-	static bool ms_onCaptureWindow;
-	static bool ms_onReleaseWindow;
-	static bool ms_onRestoreWindow;
+	class JWWinBase final
+	{
+	private:
+		static bool ms_onMouseMove;
+		static bool ms_onMouseDoubleCliked;
+		static bool ms_bMouseLBTNDown;
+		static bool ms_IsWindowCaptured;
+		static bool ms_onCaptureWindow;
+		static bool ms_onReleaseWindow;
+		static bool ms_onRestoreWindow;
 
-	HINSTANCE m_hInstance;
-	HWND m_hWnd;
+		HINSTANCE m_hInstance;
+		HWND m_hWnd;
 
-	LPDIRECT3D9 m_pD3D;
-	LPDIRECT3DDEVICE9 m_pD3DDevice;
-	D3DPRESENT_PARAMETERS m_D3DPP;
+		LPDIRECT3D9 m_pD3D;
+		LPDIRECT3DDEVICE9 m_pD3DDevice;
+		D3DPRESENT_PARAMETERS m_D3DPP;
 
-	HRESULT m_HResult;
-	
-	POINT m_MousePosition;
-	POINT m_CapturedMousePosition;
-	JW_INT2 m_WindowSize;
-	JW_INT2 m_WindowSizePrev;
-	JW_INT2 m_CapturedWindowSize;
-	JW_INT2 m_WindowPosition;
-	JW_INT2 m_WindowPositionPrev;
-	JW_INT2 m_CapturedWindowPosition;
-	DWORD m_ClearColor;
-	bool m_bMaximized;
+		HRESULT m_HResult;
 
-private:
-	friend LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam);
-	void JWWinBase::UpdateWindowSize();
-	auto JWWinBase::GetWindowShowState()->UINT;
+		POINT m_MousePosition;
+		POINT m_CapturedMousePosition;
+		Int2 m_WindowSize;
+		Int2 m_WindowSizePrev;
+		Int2 m_CapturedWindowSize;
+		Int2 m_WindowPosition;
+		Int2 m_WindowPositionPrev;
+		Int2 m_CapturedWindowPosition;
+		DWORD m_ClearColor;
+		bool m_bMaximized;
 
-public:
-	JWWinBase() {};
-	~JWWinBase() {};
+	private:
+		friend LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam);
+		void JWWinBase::UpdateWindowSize();
+		auto JWWinBase::GetWindowShowState()->UINT;
 
-	// Creation & destruction
-	auto JWWinBase::Create(WSTRING Name, JW_INT2 Position, JW_INT2 WindowSize, DWORD BackColor)->JWERROR;
-	void JWWinBase::Destroy();
+	public:
+		JWWinBase() {};
+		~JWWinBase() {};
 
-	// Renderer
-	auto JWWinBase::BeginRender()->HRESULT;
-	auto JWWinBase::EndRender()->HRESULT;
+		// Creation & destruction
+		auto JWWinBase::Create(STRING Name, Int2 Position, Int2 WindowSize,
+			DWORD BackColor)->Error;
+		void JWWinBase::Destroy();
 
-	// Device checker
-	auto JWWinBase::CheckDevice()->HRESULT;
-	auto JWWinBase::ResetDevice()->HRESULT;
+		// Renderer
+		auto JWWinBase::BeginRender()->HRESULT;
+		auto JWWinBase::EndRender()->HRESULT;
 
-	// Recall
-	auto JWWinBase::IsMouseLeftButtonDown() const->bool;
-	auto JWWinBase::IsMouseLeftButtonUp() const->bool;
-	auto JWWinBase::OnMouseMove() const->bool;
-	auto JWWinBase::OnMouseDoubleClicked()->bool;
-	
-	//
-	void JWWinBase::MinimizeWindow();
-	void JWWinBase::MaximizeWindow();
-	void JWWinBase::Update();
+		// Device checker
+		auto JWWinBase::CheckDevice()->HRESULT;
+		auto JWWinBase::ResetDevice()->HRESULT;
 
-	// Setter
-	void JWWinBase::SetWindowPosition(JW_INT2 Value);
-	void JWWinBase::SetWindowSize(JW_INT2 Value, bool bResetDevice = true);
+		// Recall
+		auto JWWinBase::IsMouseLeftButtonDown() const->bool;
+		auto JWWinBase::IsMouseLeftButtonUp() const->bool;
+		auto JWWinBase::OnMouseMove() const->bool;
+		auto JWWinBase::OnMouseDoubleClicked()->bool;
 
-	// Getter
-	auto JWWinBase::GetWindowPosition() const->JW_INT2;
-	auto JWWinBase::GetWindowSize() const->JW_INT2;
+		//
+		void JWWinBase::MinimizeWindow();
+		void JWWinBase::MaximizeWindow();
+		void JWWinBase::Update();
 
-	// Getter only
-	auto JWWinBase::GethWnd() const->HWND;
-	auto JWWinBase::GethInstance() const->HINSTANCE;
-	auto JWWinBase::GetDevice() const->LPDIRECT3DDEVICE9;
-	auto JWWinBase::GetCapturedWindowPosition() const->JW_INT2;
-	auto JWWinBase::GetCapturedWindowSize() const->JW_INT2;
-	auto JWWinBase::GetMousePositionScreen() const->JW_INT2;
-	auto JWWinBase::GetMousePositionClient() const->JW_INT2;
-	auto JWWinBase::GetCapturedMousePositionScreen() const->JW_INT2;
-	auto JWWinBase::GetCapturedMousePositionClient() const->JW_INT2;
-	auto JWWinBase::IsWindowMaximized()->bool;
+		// Setter
+		void JWWinBase::SetWindowPosition(Int2 Value);
+		void JWWinBase::SetWindowSize(Int2 Value, bool bResetDevice = true);
+
+		// Getter
+		auto JWWinBase::GetWindowPosition() const->Int2;
+		auto JWWinBase::GetWindowSize() const->Int2;
+
+		// Getter only
+		auto JWWinBase::GethWnd() const->HWND;
+		auto JWWinBase::GethInstance() const->HINSTANCE;
+		auto JWWinBase::GetDevice() const->LPDIRECT3DDEVICE9;
+		auto JWWinBase::GetCapturedWindowPosition() const->Int2;
+		auto JWWinBase::GetCapturedWindowSize() const->Int2;
+		auto JWWinBase::GetMousePositionScreen() const->Int2;
+		auto JWWinBase::GetMousePositionClient() const->Int2;
+		auto JWWinBase::GetCapturedMousePositionScreen() const->Int2;
+		auto JWWinBase::GetCapturedMousePositionClient() const->Int2;
+		auto JWWinBase::IsWindowMaximized()->bool;
+	};
 };

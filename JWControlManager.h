@@ -5,24 +5,27 @@
 #include "Control/JWButton.h"
 #include "Control/JWImage.h"
 
-class JWControlManager final : public JWControl
+namespace JW_GUI
 {
-private:
+	class JWControlManager final : public JWControl
+	{
+	private:
 
-public:
-	VECTOR<JWControl*> m_Controls;
+	public:
+		VECTOR<JWControl*> m_Controls;
 
-public:
-	JWControlManager() {};
-	~JWControlManager() {};
+	public:
+		JWControlManager() {};
+		~JWControlManager() {};
 
-	// Creation & destruction
-	auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR override;
-	void JWControlManager::Destroy();
+		// Creation & destruction
+		auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
+		void JWControlManager::Destroy();
 
-	// Update
-	void JWControlManager::UpdateControlStates(JWWinBase* pBase);
+		// Update
+		void JWControlManager::UpdateControlStates(JWWinBase* pBase);
 
-	// Draw
-	void JWControlManager::DrawControls();
+		// Draw
+		void JWControlManager::DrawControls();
+	};
 };

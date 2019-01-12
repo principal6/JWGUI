@@ -1,30 +1,32 @@
 #include "JWControl.h"
 
+using namespace JW_GUI;
+
 JWControl::JWControl()
 {
 	m_bDrawBorder = false;
-	m_FontColor = s_DefualtFontColor;
+	m_FontColor = JWCOLOR_FONT;
 }
 
-auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
+auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 {
 	if (nullptr == (m_pDevice = pDevice))
-		return JWERROR::NullDevice;
+		return Error::NullDevice;
 
 	if (nullptr == (m_pFont = pFont))
-		return JWERROR::NullFont;
+		return Error::NullFont;
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
-JWERROR JWControl::MakeBorder()
+auto JWControl::MakeBorder()->Error
 {
-	m_Border = MAKE_UNIQUE(JWBorder);
+	m_Border = MAKE_UNIQUE(JWBorder)();
 	if (JW_FAILED(m_Border->Create(m_pDevice)))
-		return JWERROR::BorderNotCreated;
+		return Error::BorderNotCreated;
 
 	m_Border->MakeBorder(m_Size);
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
 void JWControl::UpdateBorder()
@@ -44,7 +46,7 @@ void JWControl::DrawString()
 	SetRect(&m_RectFont, static_cast<int>(m_Position.x), static_cast<int>(m_Position.y),
 		static_cast<int>(m_Position.x + m_Size.x), static_cast<int>(m_Position.y + m_Size.y));
 
-	m_pFont->DrawText(nullptr, m_Text.c_str(), -1, &m_RectFont, DT_LEFT | DT_VCENTER | DT_NOCLIP, m_FontColor);
+	m_pFont->DrawTextA(nullptr, m_Text.c_str(), -1, &m_RectFont, DT_LEFT | DT_VCENTER | DT_NOCLIP, m_FontColor);
 }
 
 void JWControl::SetRegion()
@@ -112,7 +114,7 @@ auto JWControl::GetDrawBorder() const->bool
 	return m_bDrawBorder;
 }
 
-auto JWControl::IsMouseOnRegion(JW_INT2 MousePosition) const->bool
+auto JWControl::IsMouseOnRegion(Int2 MousePosition) const->bool
 {
 	if ((MousePosition.x >= m_Region.Left) && (MousePosition.x <= m_Region.Right) &&
 		(MousePosition.y >= m_Region.Top) && (MousePosition.y <= m_Region.Bottom))

@@ -1,5 +1,7 @@
 #include "JWShape.h"
 
+using namespace JW_GUI;
+
 JWShape::JWShape()
 {
 	m_pDevice = nullptr;
@@ -14,14 +16,14 @@ JWShape::JWShape()
 	m_Alpha = 255;
 }
 
-auto JWShape::Create(LPDIRECT3DDEVICE9 pDevice)->JWERROR
+auto JWShape::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
 	if (nullptr == (m_pDevice = pDevice))
-		return JWERROR::NullDevice;
+		return Error::NullDevice;
 
 	ClearVertexAndIndexData();
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
 void JWShape::Destroy()
@@ -54,7 +56,7 @@ void JWShape::MakeRectangle(D3DXVECTOR2 Size, DWORD Color)
 	UpdateIndexBuffer();
 }
 
-void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName)
+void JWShape::MakeImage(D3DXVECTOR2 Size, STRING TextureFileName)
 {
 	m_Type = Type::Rectangle;
 	m_Size = Size;
@@ -75,7 +77,7 @@ void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName)
 	CreateTexture(TextureFileName);
 }
 
-void JWShape::CreateTexture(WSTRING FileName)
+void JWShape::CreateTexture(STRING FileName)
 {
 	if (m_pTexture)
 	{
@@ -83,13 +85,11 @@ void JWShape::CreateTexture(WSTRING FileName)
 		m_pTexture = nullptr;
 	}
 
-	WSTRING NewFileName;
-	NewFileName = ms_AppDir;
-	NewFileName += ASSET_DIR;
+	STRING NewFileName = ASSET_DIR;
 	NewFileName += FileName;
 
 	D3DXIMAGE_INFO tempImageInfo;
-	if (FAILED(D3DXCreateTextureFromFileEx(m_pDevice, NewFileName.c_str(), 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
+	if (FAILED(D3DXCreateTextureFromFileExA(m_pDevice, NewFileName.c_str(), 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
 		D3DX_DEFAULT, D3DX_DEFAULT, 0, &tempImageInfo, nullptr, &m_pTexture)))
 		return;
 

@@ -1,5 +1,7 @@
 #include "JWWinBase.h"
 
+using namespace JW_GUI;
+
 // Static member variables declaration
 bool JWWinBase::ms_onMouseMove = false;
 bool JWWinBase::ms_onMouseDoubleCliked = false;
@@ -8,7 +10,7 @@ bool JWWinBase::ms_onCaptureWindow = false;
 bool JWWinBase::ms_onReleaseWindow = false;
 bool JWWinBase::ms_onRestoreWindow = false;
 
-LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK JW_GUI::WindowProcedure(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
 	WINDOWPLACEMENT windowPlacement;
 
@@ -101,7 +103,7 @@ void JWWinBase::Update()
 	}
 }
 
-auto JWWinBase::Create(WSTRING Name, JW_INT2 Position, JW_INT2 WindowSize, DWORD BackColor)->JWERROR
+auto JWWinBase::Create(STRING Name, Int2 Position, Int2 WindowSize, DWORD BackColor)->Error
 {
 	m_WindowPosition = Position;
 	m_WindowSize = WindowSize;
@@ -109,7 +111,7 @@ auto JWWinBase::Create(WSTRING Name, JW_INT2 Position, JW_INT2 WindowSize, DWORD
 
 	m_hInstance = GetModuleHandle(nullptr);
 
-	WNDCLASS r_WndClass;
+	WNDCLASSA r_WndClass;
 	r_WndClass.cbClsExtra = 0;
 	r_WndClass.cbWndExtra = 0;
 	r_WndClass.hbrBackground = CreateSolidBrush(RGB(255, 255, 255)); // This color doesn't matter for DX will clear on it
@@ -120,16 +122,16 @@ auto JWWinBase::Create(WSTRING Name, JW_INT2 Position, JW_INT2 WindowSize, DWORD
 	r_WndClass.lpszClassName = Name.c_str();
 	r_WndClass.lpszMenuName = nullptr;
 	r_WndClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-	RegisterClass(&r_WndClass);
+	RegisterClassA(&r_WndClass);
 
-	if (nullptr == (m_hWnd = CreateWindowW(Name.c_str(), Name.c_str(), WS_POPUP, Position.x, Position.y,
+	if (nullptr == (m_hWnd = CreateWindowA(Name.c_str(), Name.c_str(), WS_POPUP, Position.x, Position.y,
 		WindowSize.x, WindowSize.y, nullptr, (HMENU)nullptr, m_hInstance, nullptr)))
-		return JWERROR::WindowNotCreated;
+		return Error::WindowNotCreated;
 
-	UnregisterClass(Name.c_str(), m_hInstance);
+	UnregisterClassA(Name.c_str(), m_hInstance);
 
 	if (nullptr == (m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
-		return JWERROR::DirectXNotCreated;
+		return Error::DirectXNotCreated;
 
 	D3DPRESENT_PARAMETERS D3DPP;
 	ZeroMemory(&D3DPP, sizeof(D3DPP));
@@ -140,10 +142,10 @@ auto JWWinBase::Create(WSTRING Name, JW_INT2 Position, JW_INT2 WindowSize, DWORD
 	if (FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd,
 		D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &m_pD3DDevice)))
 	{
-		return JWERROR::DirectXNotCreated;
+		return Error::DirectXNotCreated;
 	}
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
 void JWWinBase::Destroy()
@@ -243,8 +245,8 @@ void JWWinBase::MaximizeWindow()
 		int W = GetSystemMetrics(SM_CXSCREEN);
 		int H = rect.bottom - rect.top;
 		
-		SetWindowSize(JW_INT2(W, H));
-		SetWindowPosition(JW_INT2(0, 0));
+		SetWindowSize(Int2(W, H));
+		SetWindowPosition(Int2(0, 0));
 
 		m_bMaximized = true;
 	}
@@ -259,13 +261,13 @@ void JWWinBase::UpdateWindowSize()
 	m_WindowSize.y = tempRect.bottom - tempRect.top;
 }
 
-void JWWinBase::SetWindowPosition(JW_INT2 Value)
+void JWWinBase::SetWindowPosition(Int2 Value)
 {
 	m_WindowPosition = Value;
 	SetWindowPos(m_hWnd, nullptr, Value.x, Value.y, 0, 0, SWP_NOSIZE);
 }
 
-void JWWinBase::SetWindowSize(JW_INT2 Value, bool bResetDevice)
+void JWWinBase::SetWindowSize(Int2 Value, bool bResetDevice)
 {
 	m_WindowSize = Value;
 	SetWindowPos(m_hWnd, nullptr, 0, 0, Value.x, Value.y, SWP_NOMOVE);
@@ -274,22 +276,22 @@ void JWWinBase::SetWindowSize(JW_INT2 Value, bool bResetDevice)
 		ResetDevice();
 }
 
-auto JWWinBase::GetWindowPosition() const->JW_INT2
+auto JWWinBase::GetWindowPosition() const->Int2
 {
 	return m_WindowPosition;
 }
 
-auto JWWinBase::GetCapturedWindowPosition() const->JW_INT2
+auto JWWinBase::GetCapturedWindowPosition() const->Int2
 {
 	return m_CapturedWindowPosition;
 }
 
-auto JWWinBase::GetCapturedWindowSize() const->JW_INT2
+auto JWWinBase::GetCapturedWindowSize() const->Int2
 {
 	return m_CapturedWindowSize;
 }
 
-auto JWWinBase::GetWindowSize() const->JW_INT2
+auto JWWinBase::GetWindowSize() const->Int2
 {
 	return m_WindowSize;
 }
@@ -309,24 +311,24 @@ auto JWWinBase::GetDevice() const->LPDIRECT3DDEVICE9
 	return m_pD3DDevice;
 }
 
-auto JWWinBase::GetMousePositionScreen() const->JW_INT2
+auto JWWinBase::GetMousePositionScreen() const->Int2
 {
 	return m_MousePosition;
 }
 
-auto JWWinBase::GetMousePositionClient() const->JW_INT2
+auto JWWinBase::GetMousePositionClient() const->Int2
 {
 	POINT Result = m_MousePosition;
 	ScreenToClient(m_hWnd, &Result);
 	return Result;
 }
 
-auto JWWinBase::GetCapturedMousePositionScreen() const->JW_INT2
+auto JWWinBase::GetCapturedMousePositionScreen() const->Int2
 {
 	return m_CapturedMousePosition;
 }
 
-auto JWWinBase::GetCapturedMousePositionClient() const->JW_INT2
+auto JWWinBase::GetCapturedMousePositionClient() const->Int2
 {
 	POINT Result = m_CapturedMousePosition;
 	ScreenToClient(m_hWnd, &Result);

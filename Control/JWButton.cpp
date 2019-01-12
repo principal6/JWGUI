@@ -1,44 +1,46 @@
 #include "JWButton.h"
 
+using namespace JW_GUI;
+
 JWButton::JWButton()
 {
 	m_bDrawAlt = false;
 }
 
-auto JWButton::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
+auto JWButton::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 {
 	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
-		return JWERROR::ControlNotCreated;
+		return Error::ControlNotCreated;
 
-	m_Shape = MAKE_UNIQUE(JWShape);
+	m_Shape = MAKE_UNIQUE(JWShape)();
 	if (JW_FAILED(m_Shape->Create(pDevice)))
-		return JWERROR::ShapeNotCreated;
+		return Error::ShapeNotCreated;
 
 	m_ControlType = CONTROL_TYPE::Button;
 	m_ControlState = CONTROL_STATE::Normal;
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
-auto JWButton::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size)->JWERROR
+auto JWButton::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size)->Error
 {
 	m_Type = Type;
 
 	if (IsSystemButton())
 	{
 		m_Size = Size;
-		m_ColorBackground = s_DefaultDarkColor;
-		m_Shape->MakeRectangle(Size, s_DefaultDarkColor);
+		m_ColorBackground = JWCOLOR_DARK;
+		m_Shape->MakeRectangle(Size, JWCOLOR_DARK);
 
 		SetRegion();
 
-		m_SystemLine = MAKE_UNIQUE(JWLine);
+		m_SystemLine = MAKE_UNIQUE(JWLine)();
 		if (JW_FAILED(m_SystemLine->Create(m_pDevice)))
-			return JWERROR::LineNotCreated;
+			return Error::LineNotCreated;
 
-		m_SystemLineAlt = MAKE_UNIQUE(JWLine);
+		m_SystemLineAlt = MAKE_UNIQUE(JWLine)();
 		if (JW_FAILED(m_SystemLineAlt->Create(m_pDevice)))
-			return JWERROR::LineNotCreated;
+			return Error::LineNotCreated;
 		
 		D3DXVECTOR2 RatioSize;
 		D3DXVECTOR2 NewSize;
@@ -57,12 +59,12 @@ auto JWButton::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size)->JWERROR
 			tempX = (Size.x - NewSize.x) / 2;
 			tempY = (Size.y - NewSize.y) / 2;
 
-			m_SystemLine->AddLine(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(NewSize.x, NewSize.y), s_SystemMarkColor);
-			m_SystemLine->AddLine(D3DXVECTOR2(tempX + 1.0f, tempY), D3DXVECTOR2(NewSize.x, NewSize.y), s_SystemMarkColor);
+			m_SystemLine->AddLine(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(NewSize.x, NewSize.y), JWCOLOR_SYSTEM_MARK);
+			m_SystemLine->AddLine(D3DXVECTOR2(tempX + 1.0f, tempY), D3DXVECTOR2(NewSize.x, NewSize.y), JWCOLOR_SYSTEM_MARK);
 			m_SystemLine->AddLine(D3DXVECTOR2(tempX + NewSize.x, tempY),
-				D3DXVECTOR2(-NewSize.x, NewSize.y), s_SystemMarkColor);
+				D3DXVECTOR2(-NewSize.x, NewSize.y), JWCOLOR_SYSTEM_MARK);
 			m_SystemLine->AddLine(D3DXVECTOR2(tempX + NewSize.x + 1.0f, tempY),
-				D3DXVECTOR2(-NewSize.x, NewSize.y), s_SystemMarkColor);
+				D3DXVECTOR2(-NewSize.x, NewSize.y), JWCOLOR_SYSTEM_MARK);
 			m_SystemLine->AddEnd();
 			break;
 		case BUTTON_TYPE::SystemMinimize:
@@ -76,8 +78,8 @@ auto JWButton::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size)->JWERROR
 			tempX = (Size.x - NewSize.x) / 2;
 			tempY = Size.y - (NewSize.y / 2);
 
-			m_SystemLine->AddLine(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(NewSize.x, 0), s_SystemMarkColor);
-			m_SystemLine->AddLine(D3DXVECTOR2(tempX, tempY + 1.0f), D3DXVECTOR2(NewSize.x, 0), s_SystemMarkColor);
+			m_SystemLine->AddLine(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(NewSize.x, 0), JWCOLOR_SYSTEM_MARK);
+			m_SystemLine->AddLine(D3DXVECTOR2(tempX, tempY + 1.0f), D3DXVECTOR2(NewSize.x, 0), JWCOLOR_SYSTEM_MARK);
 			m_SystemLine->AddEnd();
 
 			break;
@@ -92,20 +94,20 @@ auto JWButton::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size)->JWERROR
 			tempX = (Size.x - NewSize.x) / 2;
 			tempY = (Size.y - NewSize.y) / 2;
 
-			m_SystemLine->AddBox(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(NewSize.x, NewSize.y), s_SystemMarkColor);
+			m_SystemLine->AddBox(D3DXVECTOR2(tempX, tempY), D3DXVECTOR2(NewSize.x, NewSize.y), JWCOLOR_SYSTEM_MARK);
 			m_SystemLine->AddBox(D3DXVECTOR2(tempX + 1.0f, tempY + 1.0f),
-				D3DXVECTOR2(NewSize.x - 2.0f, NewSize.y - 2.0f), s_SystemMarkColor);
+				D3DXVECTOR2(NewSize.x - 2.0f, NewSize.y - 2.0f), JWCOLOR_SYSTEM_MARK);
 			m_SystemLine->AddEnd();
 
 			m_SystemLineAlt->AddBox(D3DXVECTOR2(tempX + 1.0f, tempY + 1.0f),
-				D3DXVECTOR2(NewSize.x - 1.0f, NewSize.y - 1.0f), s_SystemMarkColor);
+				D3DXVECTOR2(NewSize.x - 1.0f, NewSize.y - 1.0f), JWCOLOR_SYSTEM_MARK);
 			m_SystemLineAlt->AddBox(D3DXVECTOR2(tempX + 2.0f, tempY + 2.0f),
-				D3DXVECTOR2(NewSize.x - 3.0f, NewSize.y - 3.0f), s_SystemMarkColor);
+				D3DXVECTOR2(NewSize.x - 3.0f, NewSize.y - 3.0f), JWCOLOR_SYSTEM_MARK);
 
 			m_SystemLineAlt->AddLine(D3DXVECTOR2(tempX + 3.0f, tempY - 1.0f),
-				D3DXVECTOR2(NewSize.x - 1.0f, 0), s_SystemMarkColor);
+				D3DXVECTOR2(NewSize.x - 1.0f, 0), JWCOLOR_SYSTEM_MARK);
 			m_SystemLineAlt->AddLine(D3DXVECTOR2(tempX + 2.0f + NewSize.x, tempY - 2.0f),
-				D3DXVECTOR2(0, NewSize.y), s_SystemMarkColor);
+				D3DXVECTOR2(0, NewSize.y), JWCOLOR_SYSTEM_MARK);
 
 			m_SystemLineAlt->AddEnd();
 			break;
@@ -116,10 +118,10 @@ auto JWButton::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size)->JWERROR
 		// Create border line
 		JWControl::MakeBorder();
 
-		return JWERROR::Ok;
+		return Error::Ok;
 	}
 
-	return JWERROR::InvalidType;
+	return Error::InvalidType;
 }
 
 void JWButton::Draw()
@@ -220,13 +222,13 @@ void JWButton::CheckState()
 	switch (m_ControlState)
 	{
 	case JWButton::CONTROL_STATE::Normal:
-		m_Shape->SetColor(s_DefaultDarkColor);
+		m_Shape->SetColor(JWCOLOR_DARK);
 		break;
 	case JWButton::CONTROL_STATE::Hover:
-		m_Shape->SetColor(s_DefaultPlainColor);
+		m_Shape->SetColor(JWCOLOR_PLAIN);
 		break;
 	case JWButton::CONTROL_STATE::Pressed:
-		m_Shape->SetColor(s_DefaultHighlightColor);
+		m_Shape->SetColor(JWCOLOR_HIGHLIGHT);
 		break;
 	default:
 		break;

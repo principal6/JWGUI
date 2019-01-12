@@ -1,12 +1,14 @@
 #include "JWLine.h"
 
-// Static member variable declaration
-LPDIRECT3DDEVICE9 JWLine::m_pDevice = nullptr;
+using namespace JW_GUI;
 
 JWLine::JWLine()
 {
+	m_pDevice = nullptr;
 	m_pVertexBuffer = nullptr;
 	m_pIndexBuffer = nullptr;
+
+	ClearVertexAndIndexData();
 
 	m_Position = D3DXVECTOR2(0.0f, 0.0f);
 	m_Alpha = 255;
@@ -18,14 +20,14 @@ void JWLine::ClearVertexAndIndexData()
 	m_Indices.clear();
 }
 
-auto JWLine::Create(LPDIRECT3DDEVICE9 pDevice)->JWERROR
+auto JWLine::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
 	if (nullptr == (m_pDevice = pDevice))
-		return JWERROR::NullDevice;
+		return Error::NullDevice;
 	
 	ClearVertexAndIndexData();
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
 void JWLine::Destroy()

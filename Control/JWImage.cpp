@@ -1,21 +1,23 @@
 #include "JWImage.h"
 
-auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR
+using namespace JW_GUI;
+
+auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 {
 	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
-		return JWERROR::ControlNotCreated;
+		return Error::ControlNotCreated;
 
-	m_Shape = UNIQUE_PTR<JWShape>(new JWShape);
+	m_Shape = MAKE_UNIQUE(JWShape)();
 	if (JW_FAILED(m_Shape->Create(pDevice)))
-		return JWERROR::ShapeNotCreated;
+		return Error::ShapeNotCreated;
 
 	m_ControlType = CONTROL_TYPE::Image;
 	m_ControlState = CONTROL_STATE::Normal;
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
-void JWImage::MakeImage(WSTRING TextureFileName, D3DXVECTOR2 Size)
+void JWImage::MakeImage(STRING TextureFileName, D3DXVECTOR2 Size)
 {
 	// Create background
 	m_Shape->MakeImage(Size, TextureFileName);

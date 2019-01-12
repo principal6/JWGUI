@@ -1,5 +1,7 @@
 #include "JWGUI.h"
 
+using namespace JW_GUI;
+
 JWGUI::JWGUI()
 {
 	m_bValuesLocked = false;
@@ -7,50 +9,51 @@ JWGUI::JWGUI()
 	m_bCanMove = false;
 }
 
-auto JWGUI::Create(WSTRING Name)->JWERROR
+auto JWGUI::Create(STRING Name)->Error
 {
 	// @warning: Console window is for debugging
 	// Close the console window	
 	FreeConsole();
 
-	// Get current application directory
-	JWCommon CommonData;
-	CommonData.SetApplicationDir();
-
 	// Create base window and initialize DirectX
-	m_WinBase = MAKE_UNIQUE(JWWinBase);
-	if (JW_FAILED(m_WinBase->Create(L"JWGUI", JW_INT2(200, 200), JW_INT2(600, 400), s_DefaultPlainColor)))
-		return JWERROR::WinBaseNotCreated;
+	m_WinBase = MAKE_UNIQUE(JWWinBase)();
+	if (JW_FAILED(m_WinBase->Create("JWGUI", Int2(200, 200), Int2(600, 400), JWCOLOR_PLAIN)))
+		return Error::WinBaseNotCreated;
 
 	// Create DirectX Input device
-	m_Input = MAKE_UNIQUE(JWInput);
+	m_Input = MAKE_UNIQUE(JWInput)();
 	if (JW_FAILED(m_Input->Create(m_WinBase->GethInstance(), m_WinBase->GethWnd())))
-		return JWERROR::DirectInputNotCreated;
+		return Error::DirectInputNotCreated;
 
 	// Create font
-	D3DXCreateFontW(m_WinBase->GetDevice(), 18, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-		ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"¸¼Àº °íµñ", &m_pFont);
+	D3DXCreateFontA(m_WinBase->GetDevice(), 18, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+		ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "¸¼Àº °íµñ", &m_pFont);
+
+	m_FontTest = MAKE_UNIQUE(JWFont)();
+	if (JW_FAILED(m_FontTest->Create(m_WinBase->GetDevice())))
+		return Error::FontNotCreated;
+	m_FontTest->MakeFont("minimal.fnt");
 
 	// Craete window border
-	m_WindowBorder = MAKE_UNIQUE(JWThickBorder);
+	m_WindowBorder = MAKE_UNIQUE(JWThickBorder)();
 	if (JW_FAILED(m_WindowBorder->Create(m_WinBase->GetDevice(), m_pFont)))
-		return JWERROR::BorderNotCreated;
+		return Error::BorderNotCreated;
 	m_WindowBorder->MakeThickBorder(D3DXVECTOR2(static_cast<float>(m_WinBase->GetWindowSize().x - 1),
 		static_cast<float>(m_WinBase->GetWindowSize().y - 1)));
 
 	// Create control manager (with font)
 	// 1. Mangage the static font object in JWControl-inherited-classes
-	m_ControlManager = MAKE_UNIQUE(JWControlManager);
+	m_ControlManager = MAKE_UNIQUE(JWControlManager)();
 	if (JW_FAILED(m_ControlManager->Create(m_WinBase->GetDevice(), m_pFont)))
-		return JWERROR::ControlManagerNotCreated;
+		return Error::ControlManagerNotCreated;
 
 	// Create main titlebar
-	m_TitleBar = MAKE_UNIQUE(JWTitlebar);
+	m_TitleBar = MAKE_UNIQUE(JWTitlebar)();
 	if (JW_FAILED(m_TitleBar->Create(m_WinBase->GetDevice(), m_pFont)))
-		return JWERROR::TitlebarNotcreated;
+		return Error::TitlebarNotcreated;
 	m_TitleBar->Make(m_WinBase->GetWindowSize(), Name);
 	
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
 void JWGUI::Run()
@@ -157,7 +160,7 @@ void JWGUI::DoEvents()
 				}
 				else
 				{
-					JW_INT2 NewPos = m_WinBase->GetCapturedWindowPosition() +
+					Int2 NewPos = m_WinBase->GetCapturedWindowPosition() +
 						m_WinBase->GetMousePositionScreen() - m_WinBase->GetCapturedMousePositionScreen();
 
 					m_WinBase->SetWindowPosition(NewPos);

@@ -2,26 +2,29 @@
 
 #include "JWControl.h"
 
-class JWLabel final : public JWControl
+namespace JW_GUI
 {
-protected:
-	UNIQUE_PTR<JWShape> m_Shape;
+	class JWLabel final : public JWControl
+	{
+	protected:
+		UNIQUE_PTR<JWShape> m_Shape;
 
-public:
-	JWLabel() {};
-	~JWLabel() {};
+	public:
+		JWLabel() {};
+		~JWLabel() {};
 
-	// Creation
-	auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->JWERROR override;
+		// Creation
+		auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
 
-	// Make
-	void JWLabel::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont = s_DefualtFontColor,
-		DWORD ColorBG = s_DefualtLabelColor);
+		// Make
+		void JWLabel::MakeLabel(STRING Text, D3DXVECTOR2 Size, DWORD ColorFont = JWCOLOR_FONT,
+			DWORD ColorBG = JWCOLOR_LABEL);
 
-	// Draw
-	void JWLabel::Draw();
+		// Draw
+		void JWLabel::Draw();
 
-	// Setter only
-	void JWLabel::SetSize(D3DXVECTOR2 Size);
-	void JWLabel::SetPosition(D3DXVECTOR2 Position);
+		// Setter only
+		void JWLabel::SetSize(D3DXVECTOR2 Size);
+		void JWLabel::SetPosition(D3DXVECTOR2 Position);
+	};
 };

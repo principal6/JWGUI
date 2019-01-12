@@ -1,5 +1,7 @@
 #include "JWInput.h"
 
+using namespace JW_GUI;
+
 JWInput::JWInput()
 {
 	m_hWnd = nullptr;
@@ -21,21 +23,21 @@ JWInput::JWInput()
 	m_MouseY = 0;
 }
 
-auto JWInput::Create(HINSTANCE hInstance, HWND hWnd)->JWERROR
+auto JWInput::Create(HINSTANCE hInstance, HWND hWnd)->Error
 {
 	m_hInstance = hInstance;
 	m_hWnd = hWnd;
 
 	if (FAILED(DirectInput8Create(m_hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void **)&m_DI8, nullptr)))
-		return JWERROR::DirectInputNotCreated;
+		return Error::DirectInputNotCreated;
 
 	if (FAILED(CreateMouseDevice(DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
-		return JWERROR::DirectInputNotCreated;
+		return Error::DirectInputNotCreated;
 
 	if (FAILED(CreateKeyboardDevice(DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
-		return JWERROR::DirectInputNotCreated;
+		return Error::DirectInputNotCreated;
 
-	return JWERROR::Ok;
+	return Error::Ok;
 }
 
 auto JWInput::CreateMouseDevice(DWORD dwFlags)->bool

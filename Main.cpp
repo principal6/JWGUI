@@ -5,13 +5,14 @@
 #define new new( _CLIENT_BLOCK, __FILE__, __LINE__)
 #endif
 
-static JWGUI myGUI;
-
 int main()
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	if (JW_OK(myGUI.Create(L"장원 GUI")))
+	using namespace JW_GUI;
+	static JWGUI myGUI;
+
+	if (JW_OK(myGUI.Create("장원 GUI")))
 	{
 		myGUI.Run();
 	}

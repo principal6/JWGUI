@@ -8,13 +8,14 @@ JWControl::JWControl()
 	m_FontColor = JWCOLOR_FONT;
 }
 
-auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
+auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
 	if (nullptr == (m_pDevice = pDevice))
 		return Error::NullDevice;
 
-	if (nullptr == (m_pFont = pFont))
-		return Error::NullFont;
+	m_Font = MAKE_UNIQUE(JWFont)();
+	if (JW_FAILED(m_Font->Create(m_pDevice)))
+		return Error::FontNotCreated;
 
 	return Error::Ok;
 }
@@ -43,10 +44,7 @@ void JWControl::DrawBorder()
 
 void JWControl::DrawString()
 {
-	SetRect(&m_RectFont, static_cast<int>(m_Position.x), static_cast<int>(m_Position.y),
-		static_cast<int>(m_Position.x + m_Size.x), static_cast<int>(m_Position.y + m_Size.y));
-
-	m_pFont->DrawTextA(nullptr, m_Text.c_str(), -1, &m_RectFont, DT_LEFT | DT_VCENTER | DT_NOCLIP, m_FontColor);
+	m_Font->Draw();
 }
 
 void JWControl::SetRegion()

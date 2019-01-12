@@ -2,9 +2,9 @@
 
 using namespace JW_GUI;
 
-auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
+auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
-	return JWControl::Create(pDevice, pFont);
+	return JWControl::Create(pDevice);
 }
 
 void JWControlManager::Destroy()

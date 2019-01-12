@@ -19,7 +19,7 @@ namespace JW_GUI
 		~JWControlManager() {};
 
 		// Creation & destruction
-		auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
+		auto JWControlManager::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 		void JWControlManager::Destroy();
 
 		// Update

@@ -17,6 +17,7 @@ namespace JW_GUI
 
 		HINSTANCE m_hInstance;
 		HWND m_hWnd;
+		RECT m_Rect;
 
 		LPDIRECT3D9 m_pD3D;
 		LPDIRECT3DDEVICE9 m_pD3DDevice;
@@ -26,6 +27,7 @@ namespace JW_GUI
 
 		POINT m_MousePosition;
 		POINT m_CapturedMousePosition;
+		Int2 m_ScreenSize;
 		Int2 m_WindowSize;
 		Int2 m_WindowSizePrev;
 		Int2 m_CapturedWindowSize;
@@ -45,7 +47,7 @@ namespace JW_GUI
 		~JWWinBase() {};
 
 		// Creation & destruction
-		auto JWWinBase::Create(STRING Name, Int2 Position, Int2 WindowSize,
+		auto JWWinBase::Create(WSTRING Name, Int2 Position, Int2 WindowSize,
 			DWORD BackColor)->Error;
 		void JWWinBase::Destroy();
 
@@ -70,7 +72,7 @@ namespace JW_GUI
 
 		// Setter
 		void JWWinBase::SetWindowPosition(Int2 Value);
-		void JWWinBase::SetWindowSize(Int2 Value, bool bResetDevice = true);
+		void JWWinBase::SetWindowSize(Int2 Value, bool bResetDevice = false);
 
 		// Getter
 		auto JWWinBase::GetWindowPosition() const->Int2;

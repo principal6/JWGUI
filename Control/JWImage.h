@@ -14,10 +14,10 @@ namespace JW_GUI
 		virtual ~JWImage() {};
 
 		// Creation
-		virtual auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
+		virtual auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
 		// Make
-		virtual void JWImage::MakeImage(STRING TextureFileName, D3DXVECTOR2 Size = D3DXVECTOR2(0, 0));
+		virtual void JWImage::MakeImage(WSTRING TextureFileName, D3DXVECTOR2 Size = D3DXVECTOR2(0, 0));
 
 		// Draw
 		virtual void JWImage::Draw();

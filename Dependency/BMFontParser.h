@@ -8,6 +8,7 @@
 #ifndef CONVENIENT_STD
 #define CONVENIENT_STD
 	using STRING = std::string;
+	using WSTRING = std::wstring;
 
 	template <typename T>
 	using VECTOR = std::vector<T>;
@@ -58,11 +59,11 @@ namespace BMF
 					UINT Vert;
 				};
 
-				STRING Face; // Name of the true type font
+				WSTRING Face; // Name of the true type font
 				UINT Size; // Size of the true type font
 				BOOL IsBold;
 				BOOL IsItalic;
-				STRING Charset; // Name of OEM (when not unicode)
+				WSTRING Charset; // Name of OEM (when not unicode)
 				BOOL IsUnicode;
 				UINT StretchH; // Font height stretch in percentage (100 = no stretch)
 				BOOL IsSmooth;
@@ -95,7 +96,7 @@ namespace BMF
 			struct BMPage
 			{
 				UINT ID; // Page ID
-				STRING File; // Texture file name
+				WSTRING File; // Texture file name
 			};
 
 			struct BMChar
@@ -126,7 +127,7 @@ namespace BMF
 			VECTOR<BMKerning> Kernings;
 		};
 
-	private:
+	protected:
 		static BMFont m_FontData;
 
 	protected:
@@ -136,7 +137,7 @@ namespace BMF
 		BMFontParser() {};
 		virtual ~BMFontParser() {};
 
-		virtual auto Parse(STRING FileName)->bool;
+		virtual auto Parse(WSTRING FileName)->bool;
 		virtual auto GetFontData()->const BMFont* const;
 	};
 };

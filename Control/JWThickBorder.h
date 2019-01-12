@@ -22,7 +22,7 @@ namespace JW_GUI
 		JWThickBorder();
 		virtual ~JWThickBorder() {};
 
-		virtual auto JWThickBorder::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
+		virtual auto JWThickBorder::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
 		virtual void JWThickBorder::MakeThickBorder(D3DXVECTOR2 Size);
 

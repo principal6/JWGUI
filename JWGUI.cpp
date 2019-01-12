@@ -9,7 +9,7 @@ JWGUI::JWGUI()
 	m_bCanMove = false;
 }
 
-auto JWGUI::Create(STRING Name)->Error
+auto JWGUI::Create(WSTRING Name)->Error
 {
 	// @warning: Console window is for debugging
 	// Close the console window	
@@ -17,7 +17,7 @@ auto JWGUI::Create(STRING Name)->Error
 
 	// Create base window and initialize DirectX
 	m_WinBase = MAKE_UNIQUE(JWWinBase)();
-	if (JW_FAILED(m_WinBase->Create("JWGUI", Int2(200, 200), Int2(600, 400), JWCOLOR_PLAIN)))
+	if (JW_FAILED(m_WinBase->Create(L"JWGUI", Int2(200, 200), Int2(600, 400), JWCOLOR_PLAIN)))
 		return Error::WinBaseNotCreated;
 
 	// Create DirectX Input device
@@ -25,18 +25,9 @@ auto JWGUI::Create(STRING Name)->Error
 	if (JW_FAILED(m_Input->Create(m_WinBase->GethInstance(), m_WinBase->GethWnd())))
 		return Error::DirectInputNotCreated;
 
-	// Create font
-	D3DXCreateFontA(m_WinBase->GetDevice(), 18, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-		ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "¸¼Àº °íµñ", &m_pFont);
-
-	m_FontTest = MAKE_UNIQUE(JWFont)();
-	if (JW_FAILED(m_FontTest->Create(m_WinBase->GetDevice())))
-		return Error::FontNotCreated;
-	m_FontTest->MakeFont("minimal.fnt");
-
 	// Craete window border
 	m_WindowBorder = MAKE_UNIQUE(JWThickBorder)();
-	if (JW_FAILED(m_WindowBorder->Create(m_WinBase->GetDevice(), m_pFont)))
+	if (JW_FAILED(m_WindowBorder->Create(m_WinBase->GetDevice())))
 		return Error::BorderNotCreated;
 	m_WindowBorder->MakeThickBorder(D3DXVECTOR2(static_cast<float>(m_WinBase->GetWindowSize().x - 1),
 		static_cast<float>(m_WinBase->GetWindowSize().y - 1)));
@@ -44,12 +35,12 @@ auto JWGUI::Create(STRING Name)->Error
 	// Create control manager (with font)
 	// 1. Mangage the static font object in JWControl-inherited-classes
 	m_ControlManager = MAKE_UNIQUE(JWControlManager)();
-	if (JW_FAILED(m_ControlManager->Create(m_WinBase->GetDevice(), m_pFont)))
+	if (JW_FAILED(m_ControlManager->Create(m_WinBase->GetDevice())))
 		return Error::ControlManagerNotCreated;
 
 	// Create main titlebar
 	m_TitleBar = MAKE_UNIQUE(JWTitlebar)();
-	if (JW_FAILED(m_TitleBar->Create(m_WinBase->GetDevice(), m_pFont)))
+	if (JW_FAILED(m_TitleBar->Create(m_WinBase->GetDevice())))
 		return Error::TitlebarNotcreated;
 	m_TitleBar->Make(m_WinBase->GetWindowSize(), Name);
 	
@@ -146,6 +137,7 @@ void JWGUI::DoEvents()
 		if (m_bCanResize)
 		{
 			m_WindowBorder->ResizeWindow(m_WinBase.get());
+			m_WindowBorder->SetSize(m_WinBase->GetWindowSize());
 		}
 		else
 		{
@@ -194,12 +186,9 @@ void JWGUI::DoEvents()
 	if (FAILED(m_WinBase->EndRender()))
 	{
 		// If EndRender() failes, the device is lost
-		m_pFont->OnLostDevice();
-
 		if (SUCCEEDED(m_WinBase->ResetDevice()))
 		{
-			m_pFont->OnResetDevice();
-			m_WindowBorder->SetSize(m_WinBase->GetWindowSize());
+			
 		}
 	}
 }

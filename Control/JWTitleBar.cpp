@@ -15,9 +15,9 @@ JWTitlebar::JWTitlebar()
 	m_bOnSystemExit = false;
 }
 
-auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
+auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
-	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
+	if (JW_FAILED(JWControl::Create(pDevice)))
 		return Error::ControlNotCreated;
 
 	m_BG = MAKE_UNIQUE(JWShape)();
@@ -25,23 +25,23 @@ auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 		return Error::ShapeNotCreated;
 
 	m_Label = MAKE_UNIQUE(JWLabel)();
-	if (JW_FAILED(m_Label->Create(pDevice, pFont)))
+	if (JW_FAILED(m_Label->Create(pDevice)))
 		return Error::LabelNotCreated;
 
 	m_SysMin = MAKE_UNIQUE(JWButton)();
-	if (JW_FAILED(m_SysMin->Create(pDevice, pFont)))
+	if (JW_FAILED(m_SysMin->Create(pDevice)))
 		return Error::SystemButtonNotCreated;
 
 	m_SysMax = MAKE_UNIQUE(JWButton)();
-	if (JW_FAILED(m_SysMax->Create(pDevice, pFont)))
+	if (JW_FAILED(m_SysMax->Create(pDevice)))
 		return Error::SystemButtonNotCreated;
 
 	m_SysExit = MAKE_UNIQUE(JWButton)();
-	if (JW_FAILED(m_SysExit->Create(pDevice, pFont)))
+	if (JW_FAILED(m_SysExit->Create(pDevice)))
 		return Error::SystemButtonNotCreated;
 
 	m_Icon = MAKE_UNIQUE(JWImage)();
-	if (JW_FAILED(m_Icon->Create(pDevice, pFont)))
+	if (JW_FAILED(m_Icon->Create(pDevice)))
 		return Error::ImageNotCreated;
 
 	m_ControlType = CONTROL_TYPE::TitleBar;
@@ -50,7 +50,7 @@ auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 	return Error::Ok;
 }
 
-void JWTitlebar::Make(Int2 WindowSize, STRING WindowName)
+void JWTitlebar::Make(Int2 WindowSize, WSTRING WindowName)
 {
 	m_BG->MakeRectangle(D3DXVECTOR2(0, 0), JWCOLOR_DARK);
 
@@ -64,7 +64,7 @@ void JWTitlebar::Make(Int2 WindowSize, STRING WindowName)
 
 	m_SysExit->MakeSystemButton(JWButton::BUTTON_TYPE::SystemExit, D3DXVECTOR2(SYSBUTTON_WIDTH, TITLEBAR_HEIGHT));
 
-	m_Icon->MakeImage("icon.png", D3DXVECTOR2(ICON_WIDTH - ICON_PAD * 2, ICON_WIDTH - ICON_PAD * 2));
+	m_Icon->MakeImage(L"icon.png", D3DXVECTOR2(ICON_WIDTH - ICON_PAD * 2, ICON_WIDTH - ICON_PAD * 2));
 
 	UpdateSize(WindowSize);
 }

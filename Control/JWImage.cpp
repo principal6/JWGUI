@@ -2,9 +2,9 @@
 
 using namespace JW_GUI;
 
-auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
+auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
-	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
+	if (JW_FAILED(JWControl::Create(pDevice)))
 		return Error::ControlNotCreated;
 
 	m_Shape = MAKE_UNIQUE(JWShape)();
@@ -17,7 +17,7 @@ auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
 	return Error::Ok;
 }
 
-void JWImage::MakeImage(STRING TextureFileName, D3DXVECTOR2 Size)
+void JWImage::MakeImage(WSTRING TextureFileName, D3DXVECTOR2 Size)
 {
 	// Create background
 	m_Shape->MakeImage(Size, TextureFileName);

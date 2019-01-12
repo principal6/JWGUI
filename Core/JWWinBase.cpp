@@ -103,7 +103,7 @@ void JWWinBase::Update()
 	}
 }
 
-auto JWWinBase::Create(STRING Name, Int2 Position, Int2 WindowSize, DWORD BackColor)->Error
+auto JWWinBase::Create(WSTRING Name, Int2 Position, Int2 WindowSize, DWORD BackColor)->Error
 {
 	m_WindowPosition = Position;
 	m_WindowSize = WindowSize;
@@ -111,7 +111,7 @@ auto JWWinBase::Create(STRING Name, Int2 Position, Int2 WindowSize, DWORD BackCo
 
 	m_hInstance = GetModuleHandle(nullptr);
 
-	WNDCLASSA r_WndClass;
+	WNDCLASSW r_WndClass;
 	r_WndClass.cbClsExtra = 0;
 	r_WndClass.cbWndExtra = 0;
 	r_WndClass.hbrBackground = CreateSolidBrush(RGB(255, 255, 255)); // This color doesn't matter for DX will clear on it
@@ -122,13 +122,13 @@ auto JWWinBase::Create(STRING Name, Int2 Position, Int2 WindowSize, DWORD BackCo
 	r_WndClass.lpszClassName = Name.c_str();
 	r_WndClass.lpszMenuName = nullptr;
 	r_WndClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-	RegisterClassA(&r_WndClass);
+	RegisterClassW(&r_WndClass);
 
-	if (nullptr == (m_hWnd = CreateWindowA(Name.c_str(), Name.c_str(), WS_POPUP, Position.x, Position.y,
+	if (nullptr == (m_hWnd = CreateWindowW(Name.c_str(), Name.c_str(), WS_POPUP, Position.x, Position.y,
 		WindowSize.x, WindowSize.y, nullptr, (HMENU)nullptr, m_hInstance, nullptr)))
 		return Error::WindowNotCreated;
 
-	UnregisterClassA(Name.c_str(), m_hInstance);
+	UnregisterClassW(Name.c_str(), m_hInstance);
 
 	if (nullptr == (m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
 		return Error::DirectXNotCreated;
@@ -138,12 +138,20 @@ auto JWWinBase::Create(STRING Name, Int2 Position, Int2 WindowSize, DWORD BackCo
 	D3DPP.Windowed = TRUE;
 	D3DPP.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	D3DPP.BackBufferFormat = D3DFMT_UNKNOWN;
+	m_ScreenSize.x = GetSystemMetrics(SM_CXSCREEN);
+	m_ScreenSize.y = GetSystemMetrics(SM_CYSCREEN);
+
+	D3DPP.hDeviceWindow = m_hWnd;
+	D3DPP.BackBufferWidth = m_ScreenSize.x;
+	D3DPP.BackBufferHeight = m_ScreenSize.y;
 
 	if (FAILED(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd,
 		D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &m_pD3DDevice)))
 	{
 		return Error::DirectXNotCreated;
 	}
+
+	SetWindowSize(m_WindowSize);
 
 	return Error::Ok;
 }
@@ -169,7 +177,14 @@ auto JWWinBase::EndRender()-> HRESULT
 	if (m_pD3DDevice)
 	{
 		m_pD3DDevice->EndScene();
-		return m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
+
+		RECT tempRect;
+		tempRect.left = 0;
+		tempRect.top = 0;
+		tempRect.right = m_Rect.right - m_Rect.left;
+		tempRect.bottom = m_Rect.bottom - m_Rect.top;
+
+		return m_pD3DDevice->Present(&tempRect, &tempRect, m_hWnd, nullptr);
 	}
 	return E_FAIL;
 }
@@ -186,6 +201,8 @@ auto JWWinBase::ResetDevice()->HRESULT
 	m_D3DPP.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	m_D3DPP.BackBufferFormat = D3DFMT_UNKNOWN;
 	m_D3DPP.hDeviceWindow = m_hWnd;
+	m_D3DPP.BackBufferWidth = m_ScreenSize.x;
+	m_D3DPP.BackBufferHeight = m_ScreenSize.y;
 
 	return m_HResult = m_pD3DDevice->Reset(&m_D3DPP);
 }
@@ -271,6 +288,8 @@ void JWWinBase::SetWindowSize(Int2 Value, bool bResetDevice)
 {
 	m_WindowSize = Value;
 	SetWindowPos(m_hWnd, nullptr, 0, 0, Value.x, Value.y, SWP_NOMOVE);
+
+	GetWindowRect(m_hWnd, &m_Rect);
 
 	if (bResetDevice)
 		ResetDevice();

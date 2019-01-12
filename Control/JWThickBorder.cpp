@@ -7,9 +7,9 @@ JWThickBorder::JWThickBorder()
 	m_bCanResizeWindow = false;
 }
 
-auto JWThickBorder::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
+auto JWThickBorder::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
-	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
+	if (JW_FAILED(JWControl::Create(pDevice)))
 		return Error::ControlNotCreated;
 
 	m_ControlType = CONTROL_TYPE::ThickBorder;

@@ -14,10 +14,10 @@ namespace JW_GUI
 		~JWLabel() {};
 
 		// Creation
-		auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
+		auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
 		// Make
-		void JWLabel::MakeLabel(STRING Text, D3DXVECTOR2 Size, DWORD ColorFont = JWCOLOR_FONT,
+		void JWLabel::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont = JWCOLOR_FONT,
 			DWORD ColorBG = JWCOLOR_LABEL);
 
 		// Draw

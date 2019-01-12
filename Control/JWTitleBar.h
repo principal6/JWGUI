@@ -32,10 +32,10 @@ namespace JW_GUI
 		~JWTitlebar() {};
 
 		// Creation
-		auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
+		auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
 		// Make
-		void JWTitlebar::Make(Int2 WindowSize, STRING WindowName);
+		void JWTitlebar::Make(Int2 WindowSize, WSTRING WindowName);
 
 		// Draw
 		void JWTitlebar::Draw();

@@ -36,7 +36,7 @@ namespace JW_GUI
 		void JWShape::UpdateVertexBuffer();
 		void JWShape::UpdateIndexBuffer();
 
-		void JWShape::CreateTexture(STRING FileName);
+		void JWShape::CreateTexture(WSTRING FileName);
 
 	public:
 		JWShape();
@@ -48,7 +48,7 @@ namespace JW_GUI
 
 		// Make
 		void JWShape::MakeRectangle(D3DXVECTOR2 Size, DWORD Color);
-		void JWShape::MakeImage(D3DXVECTOR2 Size, STRING TextureFileName);
+		void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName);
 
 		// Draw
 		void JWShape::Draw() const;

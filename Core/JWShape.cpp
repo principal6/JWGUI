@@ -9,8 +9,6 @@ JWShape::JWShape()
 	m_pIndexBuffer = nullptr;
 	m_pTexture = nullptr;
 
-	ClearVertexAndIndexData();
-
 	m_Position = D3DXVECTOR2(0.0f, 0.0f);
 	m_Size = D3DXVECTOR2(0.0f, 0.0f);
 	m_Alpha = 255;
@@ -56,7 +54,7 @@ void JWShape::MakeRectangle(D3DXVECTOR2 Size, DWORD Color)
 	UpdateIndexBuffer();
 }
 
-void JWShape::MakeImage(D3DXVECTOR2 Size, STRING TextureFileName)
+void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName)
 {
 	m_Type = Type::Rectangle;
 	m_Size = Size;
@@ -77,7 +75,7 @@ void JWShape::MakeImage(D3DXVECTOR2 Size, STRING TextureFileName)
 	CreateTexture(TextureFileName);
 }
 
-void JWShape::CreateTexture(STRING FileName)
+void JWShape::CreateTexture(WSTRING FileName)
 {
 	if (m_pTexture)
 	{
@@ -85,11 +83,11 @@ void JWShape::CreateTexture(STRING FileName)
 		m_pTexture = nullptr;
 	}
 
-	STRING NewFileName = ASSET_DIR;
+	WSTRING NewFileName = ASSET_DIR;
 	NewFileName += FileName;
 
 	D3DXIMAGE_INFO tempImageInfo;
-	if (FAILED(D3DXCreateTextureFromFileExA(m_pDevice, NewFileName.c_str(), 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
+	if (FAILED(D3DXCreateTextureFromFileExW(m_pDevice, NewFileName.c_str(), 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
 		D3DX_DEFAULT, D3DX_DEFAULT, 0, &tempImageInfo, nullptr, &m_pTexture)))
 		return;
 

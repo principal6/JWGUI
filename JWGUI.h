@@ -2,7 +2,6 @@
 
 #include "Core/JWWinBase.h"
 #include "Core/JWInput.h"
-#include "Core/JWFont.h"
 #include "Control/JWLabel.h"
 #include "Control/JWButton.h"
 #include "Control/JWThickBorder.h"
@@ -16,16 +15,13 @@ namespace JW_GUI
 	private:
 		MSG m_MSG;
 		DIMOUSESTATE2 m_MouseState;
-		STRING m_GUIName;
+		WSTRING m_GUIName;
 
 		UNIQUE_PTR<JWWinBase> m_WinBase;
 		UNIQUE_PTR<JWThickBorder> m_WindowBorder;
 		UNIQUE_PTR<JWInput> m_Input;
 		UNIQUE_PTR<JWControlManager> m_ControlManager;
 		UNIQUE_PTR<JWTitlebar> m_TitleBar;
-		LPD3DXFONT m_pFont;
-		UNIQUE_PTR<JWFont> m_FontTest;
-
 
 		bool m_bRunning;
 		bool m_bValuesLocked;
@@ -40,7 +36,7 @@ namespace JW_GUI
 		JWGUI();
 		~JWGUI() {};
 
-		auto JWGUI::Create(STRING Name)->Error;
+		auto JWGUI::Create(WSTRING Name)->Error;
 
 		void JWGUI::Run();
 	};

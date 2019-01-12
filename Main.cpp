@@ -12,7 +12,7 @@ int main()
 	using namespace JW_GUI;
 	static JWGUI myGUI;
 
-	if (JW_OK(myGUI.Create("장원 GUI")))
+	if (JW_OK(myGUI.Create(L"장원 GUI")))
 	{
 		myGUI.Run();
 	}

@@ -6,6 +6,40 @@ using namespace BMF;
 // Static member variable declaration
 BMFontParser::BMFont BMFontParser::m_FontData;
 
+auto WstringToString(WSTRING Source) -> STRING
+{
+	STRING Result;
+
+	char* temp = nullptr;
+	int len = WideCharToMultiByte(CP_ACP, 0, Source.c_str(), -1, temp, 0, nullptr, nullptr);
+
+	temp = new char[len + 1];
+	WideCharToMultiByte(CP_ACP, 0, Source.c_str(), -1, temp, len, nullptr, nullptr);
+
+	Result = temp;
+
+	delete[] temp;
+	temp = nullptr;
+	return Result;
+}
+
+auto StringToWstring(STRING Source) -> WSTRING
+{
+	WSTRING Result;
+
+	wchar_t* temp = nullptr;
+	int len = MultiByteToWideChar(CP_ACP, 0, Source.c_str(), -1, temp, 0);
+
+	temp = new wchar_t[len + 1];
+	MultiByteToWideChar(CP_ACP, 0, Source.c_str(), -1, temp, len);
+
+	Result = temp;
+
+	delete[] temp;
+	temp = nullptr;
+	return Result;
+}
+
 auto BMFontParser::ParseComma(STRING Data, UINT ID)->UINT const
 {
 	UINT Result = 0;
@@ -32,12 +66,12 @@ auto BMFontParser::ParseComma(STRING Data, UINT ID)->UINT const
 	return Result;
 }
 
-auto BMFontParser::Parse(STRING FileName)->bool
+auto BMFontParser::Parse(WSTRING FileName)->bool
 {
 	//@warning: Without "tinyxml2::" here, XMLDocument can be ambiguous because of <msxml.h> in Windows Kits
 	tinyxml2::XMLDocument tempXMLDoc;
 
-	if (tempXMLDoc.LoadFile(FileName.c_str()) == tinyxml2::XMLError::XML_SUCCESS)
+	if (tempXMLDoc.LoadFile(WstringToString(FileName).c_str()) == tinyxml2::XMLError::XML_SUCCESS)
 	{
 		const XMLElement* tempElementRoot = tempXMLDoc.FirstChildElement("font");
 
@@ -49,7 +83,7 @@ auto BMFontParser::Parse(STRING FileName)->bool
 		*/
 		tempElement = tempElementRoot->FirstChildElement("info");
 		tempAttr = tempElement->FirstAttribute();
-		m_FontData.Info.Face = tempAttr->Value();
+		m_FontData.Info.Face = StringToWstring(tempAttr->Value());
 		tempAttr = tempAttr->Next();
 		m_FontData.Info.Size = tempAttr->UnsignedValue();
 		tempAttr = tempAttr->Next();
@@ -57,7 +91,7 @@ auto BMFontParser::Parse(STRING FileName)->bool
 		tempAttr = tempAttr->Next();
 		m_FontData.Info.IsItalic = tempAttr->BoolValue();
 		tempAttr = tempAttr->Next();
-		m_FontData.Info.Charset = tempAttr->Value();
+		m_FontData.Info.Charset = StringToWstring(tempAttr->Value());
 		tempAttr = tempAttr->Next();
 		m_FontData.Info.IsUnicode = tempAttr->BoolValue();
 		tempAttr = tempAttr->Next();
@@ -116,7 +150,7 @@ auto BMFontParser::Parse(STRING FileName)->bool
 			BMFont::BMPage tempPage;
 			tempAttr = tempElement->FirstAttribute();
 			tempPage.ID = tempAttr->UnsignedValue();
-			tempPage.File = tempAttr->Next()->Value();
+			tempPage.File = StringToWstring(tempAttr->Next()->Value());
 			m_FontData.Pages.push_back(tempPage);
 
 			tempElement = tempElement->NextSiblingElement();
@@ -160,24 +194,31 @@ auto BMFontParser::Parse(STRING FileName)->bool
 		/**
 		* Parse element <kernings>
 		*/
+		//
+		//@warning: It's possible that there isn't any kerning in the file!
+		//
 		tempElement = tempElementRoot->FirstChildElement("kernings");
-		tempElementCount = tempElement->FirstAttribute()->IntValue();
-		tempElement = tempElement->FirstChildElement("kerning");
-
-		for (UINT i = 0; i < tempElementCount; i++)
+		if (tempElement)
 		{
-			BMFont::BMKerning tempKerning;
-			tempAttr = tempElement->FirstAttribute();
-			tempKerning.First = tempAttr->UnsignedValue();
-			tempAttr = tempAttr->Next();
-			tempKerning.Second = tempAttr->UnsignedValue();
-			tempAttr = tempAttr->Next();
-			tempKerning.Amount = tempAttr->IntValue();
-			m_FontData.Kernings.push_back(tempKerning);
+			tempElementCount = tempElement->FirstAttribute()->IntValue();
+			tempElement = tempElement->FirstChildElement("kerning");
 
-			tempElement = tempElement->NextSiblingElement();
+			for (UINT i = 0; i < tempElementCount; i++)
+			{
+				BMFont::BMKerning tempKerning;
+				tempAttr = tempElement->FirstAttribute();
+				tempKerning.First = tempAttr->UnsignedValue();
+				tempAttr = tempAttr->Next();
+				tempKerning.Second = tempAttr->UnsignedValue();
+				tempAttr = tempAttr->Next();
+				tempKerning.Amount = tempAttr->IntValue();
+				m_FontData.Kernings.push_back(tempKerning);
+
+				tempElement = tempElement->NextSiblingElement();
+			}
 		}
-
+		
+		// The parsing ended successfully
 		return true;
 	}
 	

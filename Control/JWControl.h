@@ -5,6 +5,7 @@
 #include "../Core/JWShape.h"
 #include "../Core/JWLine.h"
 #include "../Core/JWBorder.h"
+#include "../Core/JWFont.h"
 
 // Virtual class for every control
 namespace JW_GUI
@@ -47,17 +48,16 @@ namespace JW_GUI
 
 	protected:
 		LPDIRECT3DDEVICE9 m_pDevice;
-		LPD3DXFONT m_pFont;
 		DWORD m_FontColor;
-		RECT m_RectFont;
 
 		UNIQUE_PTR<JWBorder> m_Border;
+		UNIQUE_PTR<JWFont> m_Font;
 		bool m_bDrawBorder;
 
 		REGION m_Region;
 		D3DXVECTOR2 m_Position;
 		D3DXVECTOR2 m_Size;
-		STRING m_Text;
+		WSTRING m_Text;
 		ALIGNMENT_HORZ m_AlignmentHorz;
 		ALIGNMENT_VERT m_AlignmentVert;
 
@@ -76,7 +76,7 @@ namespace JW_GUI
 		virtual ~JWControl() {};
 
 		// Creation
-		virtual auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error;
+		virtual auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice)->Error;
 
 		// Draw
 		virtual void JWControl::DrawBorder();

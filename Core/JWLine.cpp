@@ -8,8 +8,6 @@ JWLine::JWLine()
 	m_pVertexBuffer = nullptr;
 	m_pIndexBuffer = nullptr;
 
-	ClearVertexAndIndexData();
-
 	m_Position = D3DXVECTOR2(0.0f, 0.0f);
 	m_Alpha = 255;
 }

@@ -34,7 +34,7 @@ namespace JW_GUI
 		~JWButton() {};
 
 		// Creation
-		auto JWButton::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error override;
+		auto JWButton::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
 		// Make
 		auto JWButton::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size)->Error;

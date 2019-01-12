@@ -13,6 +13,7 @@
 #ifndef CONVENIENT_STD
 #define CONVENIENT_STD
 	using STRING = std::string;
+	using WSTRING = std::wstring;
 
 	template <typename T>
 	using VECTOR = std::vector<T>;
@@ -36,11 +37,13 @@ namespace JW_GUI
 {
 	using DWORD = unsigned long;
 
-	static const int MAX_PATH_LEN = 260;
-	static const char ASSET_DIR[] = "Asset\\";
+	static const UINT MAX_PATH_LEN = 260;
+	static const wchar_t ASSET_DIR[] = L"Asset\\";
+	static const wchar_t FONT_NAME[] = L"megt20all.fnt";
+	static const UINT MAX_TEXT_LEN = 20;
 
-	static const int MIN_WINDOW_WIDTH = 100;
-	static const int MIN_WINDOW_HEIGHT = 60;
+	static const UINT MIN_WINDOW_WIDTH = 100;
+	static const UINT MIN_WINDOW_HEIGHT = 60;
 
 	static const DWORD D3DFVF_ALL = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 	static const DWORD D3DFVF_NO_TEXTURE = D3DFVF_XYZRHW | D3DFVF_DIFFUSE;
@@ -76,6 +79,9 @@ namespace JW_GUI
 		// Window, DirectX creation failure
 		WindowNotCreated,
 		DirectXNotCreated,
+		TextureNotCreated,
+		VertexBufferNotCreated,
+		IndexBufferNotCreated,
 		// Core class instance creation failure
 		FontNotCreated,
 		ShapeNotCreated,
@@ -92,11 +98,16 @@ namespace JW_GUI
 		ImageNotCreated,
 		// GUIWindow class creation failure
 		TitlebarNotcreated,
+		// Lock
+		VertexBufferNotLocked,
+		IndexBufferNotLocked,
 		// Null pointer
 		NullDevice,
-		NullFont,
+		NullVertex,
+		NullIndex,
 		// Input is invalid
 		InvalidType,
+		NotEnoughBuffer,
 	};
 
 	struct Int2

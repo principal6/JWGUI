@@ -7,9 +7,9 @@ JWButton::JWButton()
 	m_bDrawAlt = false;
 }
 
-auto JWButton::Create(LPDIRECT3DDEVICE9 pDevice, LPD3DXFONT pFont)->Error
+auto JWButton::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 {
-	if (JW_FAILED(JWControl::Create(pDevice, pFont)))
+	if (JW_FAILED(JWControl::Create(pDevice)))
 		return Error::ControlNotCreated;
 
 	m_Shape = MAKE_UNIQUE(JWShape)();

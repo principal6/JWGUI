@@ -1,13 +1,12 @@
 #pragma once
 
-#include "../Core/JWWinBase.h"
 #include "JWButton.h"
 #include "JWLabel.h"
 #include "JWImage.h"
 
 namespace JW_GUI
 {
-	class JWTitlebar final : public JWControl
+	class JWTitleBar final : public JWControl
 	{
 	private:
 		static const float TITLEBAR_HEIGHT;
@@ -28,32 +27,31 @@ namespace JW_GUI
 		bool m_bOnWindowMove;
 
 	public:
-		JWTitlebar();
-		~JWTitlebar() {};
+		JWTitleBar();
+		~JWTitleBar() {};
 
 		// Creation
-		auto JWTitlebar::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
+		auto JWTitleBar::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
 		// Make
-		void JWTitlebar::Make(Int2 WindowSize, WSTRING WindowName);
-
-		// Draw
-		void JWTitlebar::Draw();
+		void JWTitleBar::Make(Int2 WindowSize, WSTRING WindowName);
 
 		// Update
-		void JWTitlebar::Update(JWWinBase* pBase);
-		void JWTitlebar::UpdateSize(Int2 WindowSize);
-		void JWTitlebar::UpdateControlStates(JWWinBase* pBase);
+		void JWTitleBar::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown) override;
+		void JWTitleBar::UpdateSize(Int2 WindowSize);
+
+		// Draw
+		void JWTitleBar::Draw();
 
 		// Recall
-		auto JWTitlebar::OnSystemMinimize()->bool;
-		auto JWTitlebar::OnSystemMaximize()->bool;
-		auto JWTitlebar::OnSystemExit() const->bool;
+		auto JWTitleBar::OnSystemMinimize()->bool;
+		auto JWTitleBar::OnSystemMaximize()->bool;
+		auto JWTitleBar::OnSystemExit() const->bool;
 
 		// Move or stop the window
-		auto JWTitlebar::CanMoveWindow(POINT CapturedMousePositionClient)->bool;
-		void JWTitlebar::StopWindow();
-		void JWTitlebar::ToggleSysMaxButton();
-		void JWTitlebar::DoubleClickMaximize(POINT MouePosition);
+		auto JWTitleBar::CanMoveWindow(POINT CapturedMousePositionClient)->bool;
+		void JWTitleBar::StopWindow();
+		void JWTitleBar::ToggleSysMaxButton();
+		void JWTitleBar::DoubleClickMaximize(POINT MouePosition);
 	};
 };

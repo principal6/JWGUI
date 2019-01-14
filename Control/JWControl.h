@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Core/JWWinBase.h"
 #include "../Core/JWCommon.h"
 #include "../Core/JWShape.h"
 #include "../Core/JWLine.h"
@@ -66,9 +65,13 @@ namespace JW_GUI
 		CONTROL_TYPE m_ControlType;
 		CONTROL_STATE m_ControlState;
 
+		POINT m_MousePosition;
+		POINT m_MouseDownPosition;
+
 	protected:
 		virtual auto JWControl::MakeBorder()->Error;
 		virtual void JWControl::UpdateBorder();
+
 		virtual auto JWControl::IsMouseOnRegion(Int2 MousePosition) const->bool;
 
 	public:
@@ -78,7 +81,16 @@ namespace JW_GUI
 		// Creation
 		virtual auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice)->Error;
 
+		// Make
+		// @warning: these functions are defined in each sub-class
+		virtual void JWControl::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont = JWCOLOR_FONT,
+			DWORD ColorBG = JWCOLOR_LABEL) {};
+
+		// Update
+		virtual void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown);
+
 		// Draw
+		virtual void JWControl::Draw() {};
 		virtual void JWControl::DrawBorder();
 		virtual void JWControl::DrawString();
 
@@ -89,12 +101,12 @@ namespace JW_GUI
 		virtual void JWControl::SetAlignmentVert(ALIGNMENT_VERT Align);
 		virtual void JWControl::SetDrawBorder(bool Value);
 		virtual void JWControl::SetFontColor(DWORD Color);
+		virtual void JWControl::SetSize(D3DXVECTOR2 Size) {};
+		virtual void JWControl::SetPosition(D3DXVECTOR2 Position) {};
 
 		// Getter only
 		// This function has no setter, becuase control type is decided when the control is created
 		virtual auto JWControl::GetControlType() const->CONTROL_TYPE;
-		// This functions has its correspondent setter in sub-classes
-		virtual auto JWControl::GetPosition() const->D3DXVECTOR2;
 
 		// Getter
 		virtual auto JWControl::GetRegion() const->REGION;
@@ -102,8 +114,6 @@ namespace JW_GUI
 		virtual auto JWControl::GetAlignmentHorz() const->ALIGNMENT_HORZ;
 		virtual auto JWControl::GetAlignmentVert() const->ALIGNMENT_VERT;
 		virtual auto JWControl::GetDrawBorder() const->bool;
-
-		// Update control state
-		void JWControl::UpdateControlState(JWWinBase* pBase);
+		virtual auto JWControl::GetPosition() const->D3DXVECTOR2;
 	};
 };

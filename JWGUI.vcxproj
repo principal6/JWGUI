@@ -162,15 +162,16 @@
     <ClCompile Include="Control\JWThickBorder.cpp" />
     <ClCompile Include="Control\JWTitleBar.cpp" />
     <ClCompile Include="Core\JWBorder.cpp" />
+    <ClCompile Include="Core\JWDXDevice.cpp" />
     <ClCompile Include="Core\JWFont.cpp" />
     <ClCompile Include="Core\JWInput.cpp" />
     <ClCompile Include="Core\JWLine.cpp" />
     <ClCompile Include="Core\JWShape.cpp" />
-    <ClCompile Include="Core\JWWinBase.cpp" />
     <ClCompile Include="Dependency\BMFontParser.cpp" />
     <ClCompile Include="Dependency\tinyxml2.cpp" />
-    <ClCompile Include="JWControlManager.cpp" />
     <ClCompile Include="JWGUI.cpp" />
+    <ClCompile Include="JWOutterWindow.cpp" />
+    <ClCompile Include="JWWindow.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,15 +183,16 @@
     <ClInclude Include="Control\JWTitleBar.h" />
     <ClInclude Include="Core\JWBorder.h" />
     <ClInclude Include="Core\JWCommon.h" />
+    <ClInclude Include="Core\JWDXDevice.h" />
     <ClInclude Include="Core\JWFont.h" />
     <ClInclude Include="Core\JWInput.h" />
     <ClInclude Include="Core\JWLine.h" />
     <ClInclude Include="Core\JWShape.h" />
-    <ClInclude Include="Core\JWWinBase.h" />
     <ClInclude Include="Dependency\BMFontParser.h" />
     <ClInclude Include="Dependency\tinyxml2.h" />
-    <ClInclude Include="JWControlManager.h" />
     <ClInclude Include="JWGUI.h" />
+    <ClInclude Include="JWOutterWindow.h" />
+    <ClInclude Include="JWWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

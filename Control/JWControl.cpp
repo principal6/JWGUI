@@ -122,24 +122,26 @@ auto JWControl::IsMouseOnRegion(Int2 MousePosition) const->bool
 	return false;
 }
 
-void JWControl::UpdateControlState(JWWinBase* pBase)
+void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown)
 {
-	if (IsMouseOnRegion(pBase->GetMousePositionClient()))
+	m_MousePosition = MousePosition;
+	m_MouseDownPosition = MouseDownPosition;
+
+	// Currently the mouse pointer is in the region
+	if (IsMouseOnRegion(m_MousePosition))
 	{
-		// Currently the mouse pointer is in the region
-		if (pBase->IsMouseLeftButtonDown())
+		// When the left button is pressed
+		if (IsLeftButtonDown)
 		{
-			// When the left button is pressed
-			if (IsMouseOnRegion(pBase->GetCapturedMousePositionClient()))
+			// If the button was pressed in the region
+			if (IsMouseOnRegion(m_MouseDownPosition))
 			{
-				// When the button is pressed in the region
 				SetControlState(JWControl::CONTROL_STATE::Pressed);
 				return;
 			}
 		}
-		else
+		else // When no button is pressed
 		{
-			// When no button is pressed
 			if (GetControlState() == JWControl::CONTROL_STATE::Pressed)
 			{
 				SetControlState(JWControl::CONTROL_STATE::Clicked);

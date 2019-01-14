@@ -78,15 +78,17 @@ namespace JW_GUI
 		Ok,
 		// Window, DirectX creation failure
 		WindowNotCreated,
-		DirectXNotCreated,
+		Direct3D9NotCraeted,
+		DeviceNotCreated,
 		TextureNotCreated,
 		VertexBufferNotCreated,
 		IndexBufferNotCreated,
 		// Core class instance creation failure
+		OutterWindowNotCreated,
+		DXDeviceNotCreated,
 		FontNotCreated,
 		ShapeNotCreated,
 		LineNotCreated,
-		WinBaseNotCreated,
 		DirectInputNotCreated,
 		// Control class creation failure
 		BorderNotCreated,
@@ -98,13 +100,16 @@ namespace JW_GUI
 		ImageNotCreated,
 		// GUIWindow class creation failure
 		TitlebarNotcreated,
+		GUINotCreated,
 		// Lock
 		VertexBufferNotLocked,
 		IndexBufferNotLocked,
 		// Null pointer
+		NullDXDevice,
 		NullDevice,
 		NullVertex,
 		NullIndex,
+		NullHWND,
 		// Input is invalid
 		InvalidType,
 		NotEnoughBuffer,

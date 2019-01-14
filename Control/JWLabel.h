@@ -18,13 +18,13 @@ namespace JW_GUI
 
 		// Make
 		void JWLabel::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont = JWCOLOR_FONT,
-			DWORD ColorBG = JWCOLOR_LABEL);
+			DWORD ColorBG = JWCOLOR_LABEL) override;
 
 		// Draw
-		void JWLabel::Draw();
+		void JWLabel::Draw() override;
 
 		// Setter only
-		void JWLabel::SetSize(D3DXVECTOR2 Size);
-		void JWLabel::SetPosition(D3DXVECTOR2 Position);
+		void JWLabel::SetSize(D3DXVECTOR2 Size) override;
+		void JWLabel::SetPosition(D3DXVECTOR2 Position) override;
 	};
 };

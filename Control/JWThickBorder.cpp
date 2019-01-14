@@ -64,7 +64,7 @@ void JWThickBorder::SetRegion()
 		D3DXVECTOR2(2.0f, 2.0f)); // bottom-left
 }
 
-auto JWThickBorder::IsMouseOnRegion(Int2 MousePosition)->bool
+auto JWThickBorder::IsMouseOnRegion(Int2 MousePosition) const->bool
 {
 	bool Result = false;
 
@@ -86,6 +86,7 @@ auto JWThickBorder::IsMouseOnRegion(Int2 MousePosition)->bool
 void JWThickBorder::SetCursorAndMoveID()
 {
 	m_MoveID = -1;
+
 	for (int i = 0; i < 8; i++)
 	{
 		if (m_RegionWithMouseOver[i])
@@ -116,30 +117,27 @@ void JWThickBorder::SetCursorAndMoveID()
 	}
 }
 
-void JWThickBorder::UpdateControlState(JWWinBase* pBase)
+void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown)
 {
-	if (IsMouseOnRegion(pBase->GetMousePositionClient()))
+	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown);
+
+	if (m_ControlState == JWControl::CONTROL_STATE::Hover)
 	{
 		SetCursorAndMoveID();
+		m_bCanResizeWindow = false;
 	}
-
-	if (IsMouseOnRegion(pBase->GetCapturedMousePositionClient()))
+	else if (m_ControlState == JWControl::CONTROL_STATE::Pressed)
 	{
-		SetCursorAndMoveID();
-
-		if (pBase->IsMouseLeftButtonDown())
+		if (m_bCanResizeWindow == false)
 		{
-			// When the button is pressed in the region
-			SetControlState(JWControl::CONTROL_STATE::Pressed);
-		}
-		if (pBase->IsMouseLeftButtonUp())
-		{
-			SetControlState(JWControl::CONTROL_STATE::Normal);
+			SetCursorAndMoveID();
+			m_CapturedMoveID = m_MoveID;
+			m_bCanResizeWindow = true;
 		}
 	}
 	else
 	{
-		SetControlState(JWControl::CONTROL_STATE::Normal);
+		m_bCanResizeWindow = false;
 	}
 }
 
@@ -148,104 +146,12 @@ auto JWThickBorder::GetCapturedMoveID()->FLAG
 	return m_CapturedMoveID;
 }
 
-auto JWThickBorder::CanResizeWindow(POINT ClientCapturedPosition)->bool
+auto JWThickBorder::CanResizeWindow()->bool
 {
-	if (!m_bCanResizeWindow)
-	{
-		if (IsMouseOnRegion(ClientCapturedPosition))
-		{
-			// Title bar move
-			m_bCanResizeWindow = true;
-			m_CapturedMoveID = m_MoveID;
-		}
-	}
 	return m_bCanResizeWindow;
 }
 
 void JWThickBorder::StopResizeWindow()
 {
 	m_bCanResizeWindow = false;
-}
-
-void JWThickBorder::ResizeWindow(JWWinBase* pBase)
-{
-	Int2 MovedPos = pBase->GetMousePositionScreen() - pBase->GetCapturedMousePositionScreen();
-	Int2 NewSize = pBase->GetCapturedWindowSize();
-	Int2 NewPos;
-
-	switch (GetCapturedMoveID())
-	{
-	case 0:
-		// top NS
-		NewSize.y -= MovedPos.y;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y + MovedPos.y;
-		break;
-	case 1:
-		// right EW
-		NewSize.x += MovedPos.x;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y;
-		break;
-	case 2:
-		// bottom NS
-		NewSize.y += MovedPos.y;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y;
-		break;
-	case 3:
-		// left EW
-		NewSize.x -= MovedPos.x;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x + MovedPos.x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y;
-		break;
-	case 4:
-		// top-right NESW
-		NewSize.x += MovedPos.x;
-		NewSize.y -= MovedPos.y;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y + MovedPos.y;
-		break;
-	case 5:
-		// top-left NESW
-		NewSize.x -= MovedPos.x;
-		NewSize.y -= MovedPos.y;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x + MovedPos.x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y + MovedPos.y;
-		break;
-	case 6:
-		// bottom-right NWSE
-		NewSize.x += MovedPos.x;
-		NewSize.y += MovedPos.y;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y;
-		break;
-	case 7:
-		// bottom-left NWSE
-		NewSize.x -= MovedPos.x;
-		NewSize.y += MovedPos.y;
-
-		NewPos.x = pBase->GetCapturedWindowPosition().x + MovedPos.x;
-		NewPos.y = pBase->GetCapturedWindowPosition().y;
-		break;
-	default:
-		return;
-		break;
-	}
-
-	if (NewSize.x < MIN_WINDOW_WIDTH)
-		NewSize.x = MIN_WINDOW_WIDTH;
-
-	if (NewSize.y < MIN_WINDOW_HEIGHT)
-		NewSize.y = MIN_WINDOW_HEIGHT;
-
-	pBase->SetWindowPosition(NewPos);
-	pBase->SetWindowSize(NewSize);
 }

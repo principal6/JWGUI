@@ -5,7 +5,7 @@ using namespace JW_GUI;
 JWControl::JWControl()
 {
 	m_bDrawBorder = false;
-	m_FontColor = JWCOLOR_FONT;
+	m_ColorFont = JWCOLOR_FONT;
 }
 
 auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice)->Error
@@ -72,9 +72,18 @@ void JWControl::SetDrawBorder(bool Value)
 	m_bDrawBorder = Value;
 }
 
-void JWControl::SetFontColor(DWORD Color)
+void JWControl::SetFontAlpha(BYTE Alpha)
 {
-	m_FontColor = Color;
+	JW_GUI::SetAlpha(&m_ColorFont, Alpha);
+
+	m_Font->SetAlpha(Alpha);
+}
+
+void JWControl::SetFontXRGB(DWORD XRGB)
+{
+	JW_GUI::SetXRGB(&m_ColorFont, XRGB);
+
+	m_Font->SetXRGB(m_ColorFont);
 }
 
 auto JWControl::GetControlType() const->JWControl::CONTROL_TYPE

@@ -80,3 +80,17 @@ void JWLabel::SetPosition(D3DXVECTOR2 Position)
 	// Set control region
 	SetRegion();
 }
+
+void JWLabel::SetBackgroundAlpha(BYTE Alpha)
+{
+	JW_GUI::SetAlpha(&m_ColorBackground, Alpha);
+
+	m_Shape->SetAlpha(Alpha);
+}
+
+void JWLabel::SetBackgroundXRGB(DWORD XRGB)
+{
+	JW_GUI::SetXRGB(&m_ColorBackground, XRGB);
+
+	m_Shape->SetXRGB(XRGB);
+}

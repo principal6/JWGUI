@@ -32,7 +32,6 @@ namespace JW_GUI
 
 		VECTOR<JWControl*> m_pControls;
 
-		bool m_bValuesLocked;
 		bool m_bCanResize;
 		bool m_bCanMove;
 
@@ -95,8 +94,8 @@ namespace JW_GUI
 		virtual auto GetWindowSize() const->Int2;
 
 		// Getter only
-		virtual auto GetMousePositionClient() const->Int2;
-		virtual auto GetMouseDownPositionClient() const->Int2;
+		virtual auto GetMousePosition() const->Int2;
+		virtual auto GetMouseDownPosition() const->Int2;
 		virtual auto GetCapturedWindowPosition() const->Int2;
 		virtual auto GetCapturedWindowSize() const->Int2;
 	};

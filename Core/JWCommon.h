@@ -231,4 +231,35 @@ namespace JW_GUI
 		Index2() : _0(0), _1(0) {};
 		Index2(int ID0, int ID1) : _0(ID0), _1(ID1) {};
 	};
+
+	inline auto GetAlpha(DWORD Color)->BYTE { return (Color >> 24); }
+	inline auto GetRed(DWORD Color)->BYTE { return ((Color << 8) >> 24); }
+	inline auto GetGreen(DWORD Color)->BYTE { return ((Color << 16) >> 24); }
+	inline auto GetBlue(DWORD Color)->BYTE { return ((Color << 24) >> 24); }
+	inline auto GetXRGB(DWORD Color)->DWORD { return ((Color << 8) >> 8); }
+
+	inline void SetAlpha(DWORD* Color, BYTE Alpha)
+	{
+		*Color = (Alpha << 24) | ((*Color << 8) >> 8);
+	}
+
+	inline void SetRed(DWORD* Color, BYTE Red)
+	{
+		*Color = ((*Color >> 24) << 24) | (Red << 16) | ((*Color << 16) >> 16);
+	}
+
+	inline void SetGreen(DWORD* Color, BYTE Green)
+	{
+		*Color = ((*Color >> 16) << 16) | (Green << 8) | ((*Color << 24) >> 24);
+	}
+
+	inline void SetBlue(DWORD* Color, BYTE Blue)
+	{
+		*Color = ((*Color >> 8) << 8) | Blue;
+	}
+
+	inline void SetXRGB(DWORD* Color, DWORD XRGB)
+	{
+		*Color = ((*Color >> 24) << 24) | ((XRGB << 8) >> 8);
+	}
 };

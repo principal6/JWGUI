@@ -222,13 +222,13 @@ void JWButton::CheckState()
 	switch (m_ControlState)
 	{
 	case JWButton::CONTROL_STATE::Normal:
-		m_Shape->SetColor(JWCOLOR_DARK);
+		m_Shape->SetXRGB(JWCOLOR_DARK);
 		break;
 	case JWButton::CONTROL_STATE::Hover:
-		m_Shape->SetColor(JWCOLOR_PLAIN);
+		m_Shape->SetXRGB(JWCOLOR_PLAIN);
 		break;
 	case JWButton::CONTROL_STATE::Pressed:
-		m_Shape->SetColor(JWCOLOR_HIGHLIGHT);
+		m_Shape->SetXRGB(JWCOLOR_HIGHLIGHT);
 		break;
 	default:
 		break;

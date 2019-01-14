@@ -53,6 +53,8 @@ namespace JW_GUI
 		//auto JWFont::SetText(WSTRING Text)->Error;
 		auto JWFont::SetText(WSTRING Text)->Error;
 		auto JWFont::SetPosition(D3DXVECTOR2 Offset)->Error;
+		auto JWFont::SetAlpha(BYTE Alpha)->Error;
+		auto JWFont::SetXRGB(DWORD Color)->Error;
 
 		void JWFont::Draw() const;
 	};

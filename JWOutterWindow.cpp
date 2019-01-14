@@ -11,7 +11,6 @@ inline auto GetWindowShowState(HWND hWnd)->UINT
 {
 	WINDOWPLACEMENT windowPlacement;
 	GetWindowPlacement(hWnd, &windowPlacement);
-
 	return windowPlacement.showCmd;
 }
 
@@ -76,7 +75,7 @@ auto JWOutterWindow::Create(WSTRING Name, Int2 Position, Int2 WindowSize, DWORD 
 	r_WndClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	RegisterClassW(&r_WndClass);
 
-	if (nullptr == (m_hWnd = CreateWindowW(r_WndClass.lpszClassName, r_WndClass.lpszClassName, WS_POPUP,
+	if (nullptr == (m_hWnd = CreateWindowExW(0L, r_WndClass.lpszClassName, r_WndClass.lpszClassName, WS_POPUP,
 		Position.x, Position.y, WindowSize.x, WindowSize.y, nullptr, (HMENU)nullptr, m_hInstance, nullptr)))
 		return Error::WindowNotCreated;
 
@@ -92,13 +91,7 @@ auto JWOutterWindow::CreateGUI(JWDXDevice* pDXDevice)->Error
 
 void JWOutterWindow::Draw()
 {
-	// Always draw the title bar
-	m_TitleBar->Draw();
-
-	// When the window is maximized, the border is not drawn
-	if (m_WindowState != WindowState::Maximized)
-		m_WindowBorder->Draw();
-
+	// Draw controls
 	if (m_pControls.size())
 	{
 		for (JWControl* iterator : m_pControls)
@@ -106,6 +99,13 @@ void JWOutterWindow::Draw()
 			iterator->Draw();
 		}	
 	}
+
+	// Always draw the title bar
+	m_TitleBar->Draw();
+
+	// When the window is maximized, the border is not drawn
+	if (m_WindowState != WindowState::Maximized)
+		m_WindowBorder->Draw();
 }
 
 auto JWOutterWindow::Update()->bool
@@ -113,7 +113,7 @@ auto JWOutterWindow::Update()->bool
 	if (m_bRunning == false)
 		return m_bRunning;
 
-	// !!
+	// Update all controls
 	JWWindow::UpdateControls();
 
 	if (ms_onCaptureWindow)
@@ -162,11 +162,6 @@ auto JWOutterWindow::Update()->bool
 
 	m_TitleBar->UpdateSize(GetWindowSize());
 
-	if (OnMouseDoubleClicked())
-	{
-		m_TitleBar->DoubleClickMaximize(GetMousePositionClient());
-	}
-
 	if (m_TitleBar->OnSystemMinimize())
 	{
 		MinimizeWindow();
@@ -183,42 +178,23 @@ auto JWOutterWindow::Update()->bool
 		return m_bRunning;
 	}
 
+	if (OnMouseDoubleClicked())
+	{
+		m_TitleBar->DoubleClickMaximize(GetMousePosition());
+	}
+
 	if (IsMouseLeftButtonDown())
 	{
-		m_bCanResize = m_WindowBorder->CanResizeWindow();
-
-		if (m_WindowState == WindowState::Maximized)
-			m_bCanResize = false;
-
-		if (!m_bValuesLocked)
+		// @warning: If the window is maximized, it cannot be resized nor moved
+		if (m_WindowState != WindowState::Maximized)
 		{
-			// Get these values only the first time the mouse button is pressed
-			m_bCanMove = m_TitleBar->CanMoveWindow(GetMouseDownPositionClient());
-
-			if (m_bCanResize)
-				m_bCanMove = false;
-
-			// Lock the values
-			m_bValuesLocked = true;
-		}
-
-		
-		if (m_bCanResize) // Resize window
-		{
-			ResizeWindow();
-		}
-		else if (m_bCanMove) // Move window
-		{
-			if (m_WindowState == WindowState::Maximized)
+			if (m_WindowBorder->CanResizeWindow()) // Resize window
 			{
-				// If the maximized window gets moved, restore the size
-				m_TitleBar->ToggleSysMaxButton();
-				MaximizeWindow();
+				ResizeWindow();
 			}
-			else
+			else if (m_TitleBar->CanMoveWindow(GetMouseDownPosition())) // Move window
 			{
-				Int2 NewPos = GetCapturedWindowPosition() + GetMousePositionScreen() - GetCapturedMousePositionScreen();
-
+				Int2 NewPos = GetCapturedWindowPosition() + GetMousePosition() - GetMouseDownPosition();
 				SetWindowPosition(NewPos);
 			}
 		}
@@ -228,9 +204,6 @@ auto JWOutterWindow::Update()->bool
 		// End moving and resizing window
 		m_TitleBar->StopWindow();
 		m_WindowBorder->StopResizeWindow();
-
-		// Unlock the values
-		m_bValuesLocked = false;
 	}
 
 	return true;
@@ -262,16 +235,6 @@ auto JWOutterWindow::GethInstance() const->HINSTANCE
 auto JWOutterWindow::GetDevice() const->LPDIRECT3DDEVICE9
 {
 	return m_pDevice;
-}
-
-auto JWOutterWindow::GetMousePositionScreen() const->Int2
-{
-	return ms_MousePosition;
-}
-
-auto JWOutterWindow::GetCapturedMousePositionScreen() const->Int2
-{
-	return ms_MouseDownPosition;
 }
 
 void JWOutterWindow::ShowJWWindow()
@@ -328,7 +291,7 @@ void JWOutterWindow::ResizeWindow()
 {
 	JWWindow::ResizeWindow();
 
-	Int2 MovedPos = GetMousePositionClient() - GetMouseDownPositionClient();
+	Int2 MovedPos = GetMousePosition() - GetMouseDownPosition();
 	Int2 NewSize = GetCapturedWindowSize();
 	Int2 NewPos;
 
@@ -395,7 +358,6 @@ void JWOutterWindow::ResizeWindow()
 		NewPos.y = GetCapturedWindowPosition().y;
 		break;
 	default:
-		return;
 		break;
 	}
 

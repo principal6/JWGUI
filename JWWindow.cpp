@@ -11,7 +11,6 @@ POINT JWWindow::ms_MouseDownPosition;
 
 JWWindow::JWWindow()
 {
-	m_bValuesLocked = false;
 	m_bCanResize = false;
 	m_bCanMove = false;
 }
@@ -111,14 +110,14 @@ auto JWWindow::GetControlPointer(UINT Control_ID)->JWControl* const
 
 void JWWindow::UpdateControls()
 {
-	m_WindowBorder->UpdateState(GetMousePositionClient(), GetMouseDownPositionClient(), IsMouseLeftButtonDown());
-	m_TitleBar->UpdateState(GetMousePositionClient(), GetMouseDownPositionClient(), IsMouseLeftButtonDown());
+	m_WindowBorder->UpdateState(GetMousePosition(), GetMouseDownPosition(), IsMouseLeftButtonDown());
+	m_TitleBar->UpdateState(GetMousePosition(), GetMouseDownPosition(), IsMouseLeftButtonDown());
 
 	if (m_pControls.size())
 	{
 		for (JWControl* iterator : m_pControls)
 		{
-			iterator->UpdateState(GetMousePositionClient(), GetMouseDownPositionClient(), IsMouseLeftButtonDown());
+			iterator->UpdateState(GetMousePosition(), GetMouseDownPosition(), IsMouseLeftButtonDown());
 		}
 	}
 }
@@ -228,14 +227,14 @@ auto JWWindow::GetCapturedWindowSize() const->Int2
 	return m_CapturedWindowSize;
 }
 
-auto JWWindow::GetMousePositionClient() const->Int2
+auto JWWindow::GetMousePosition() const->Int2
 {
 	POINT Result = ms_MousePosition;
 	ScreenToClient(m_hWnd, &Result);
 	return Result;
 }
 
-auto JWWindow::GetMouseDownPositionClient() const->Int2
+auto JWWindow::GetMouseDownPosition() const->Int2
 {
 	POINT Result = ms_MouseDownPosition;
 	ScreenToClient(m_hWnd, &Result);

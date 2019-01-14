@@ -32,6 +32,9 @@ auto JWGUI::Create(WSTRING Name)->Error
 	m_OutterWindow->AddControl(JWControl::CONTROL_TYPE::Label);
 	m_OutterWindow->GetControlPointer(0)->MakeLabel(L"AA", D3DXVECTOR2(100, 20));
 	m_OutterWindow->GetControlPointer(0)->SetPosition(D3DXVECTOR2(0, 50));
+	m_OutterWindow->GetControlPointer(0)->SetBackgroundAlpha(100);
+	m_OutterWindow->GetControlPointer(0)->SetBackgroundXRGB(D3DCOLOR_XRGB(255, 255, 0));
+	m_OutterWindow->GetControlPointer(0)->SetFontXRGB(D3DCOLOR_XRGB(0, 0, 80));
 
 	return Error::Ok;
 }

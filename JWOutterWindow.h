@@ -32,8 +32,6 @@ namespace JW_GUI
 		auto GethWnd() const->HWND;
 		auto GethInstance() const->HINSTANCE;
 		auto GetDevice() const->LPDIRECT3DDEVICE9;
-		auto GetMousePositionScreen() const->Int2;
-		auto GetCapturedMousePositionScreen() const->Int2;
 
 		// Window state change
 		void ShowJWWindow() override;

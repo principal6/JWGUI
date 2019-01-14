@@ -26,5 +26,9 @@ namespace JW_GUI
 		// Setter only
 		void JWLabel::SetSize(D3DXVECTOR2 Size) override;
 		void JWLabel::SetPosition(D3DXVECTOR2 Position) override;
+
+		// Setter
+		void JWLabel::SetBackgroundAlpha(BYTE Alpha) override;
+		void JWLabel::SetBackgroundXRGB(DWORD XRGB) override;
 	};
 };

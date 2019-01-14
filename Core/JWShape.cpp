@@ -11,7 +11,7 @@ JWShape::JWShape()
 
 	m_Position = D3DXVECTOR2(0.0f, 0.0f);
 	m_Size = D3DXVECTOR2(0.0f, 0.0f);
-	m_Alpha = 255;
+	m_Color = 0xFFFFFFFF;
 }
 
 auto JWShape::Create(LPDIRECT3DDEVICE9 pDevice)->Error
@@ -230,32 +230,32 @@ void JWShape::SetSize(D3DXVECTOR2 Size)
 	UpdateVertexBuffer();
 }
 
-void JWShape::SetColor(DWORD Color)
+void JWShape::SetXRGB(DWORD XRGB)
 {
 	if (m_Vertices.size())
 	{
-		m_Color = Color;
+		JW_GUI::SetXRGB(&m_Color, XRGB);
 
 		for (VertexShape& iterator : m_Vertices)
 		{
-			iterator.color = m_Color;
+			JW_GUI::SetXRGB(&iterator.color, XRGB);
 		}
+
 		UpdateVertexBuffer();
 	}
 }
 
-void JWShape::SetAlpha(int Alpha)
+void JWShape::SetAlpha(BYTE Alpha)
 {
 	if (m_Vertices.size())
 	{
-		Alpha = min(255, Alpha);
-		Alpha = max(0, Alpha);
-		m_Alpha = Alpha;
+		JW_GUI::SetAlpha(&m_Color, Alpha);
 
 		for (VertexShape& iterator : m_Vertices)
 		{
-			iterator.color = D3DCOLOR_ARGB(m_Alpha, 255, 255, 255);
+			JW_GUI::SetAlpha(&iterator.color, Alpha);
 		}
+
 		UpdateVertexBuffer();
 	}
 }
@@ -270,7 +270,12 @@ auto JWShape::GetSize() const->D3DXVECTOR2
 	return m_Size;
 }
 
-auto JWShape::GetAlpha() const->int
+auto JWShape::GetAlpha() const->BYTE
 {
-	return m_Alpha;
+	return JW_GUI::GetAlpha(m_Color);
+}
+
+auto JWShape::GetXRGB() const->DWORD
+{
+	return JW_GUI::GetXRGB(m_Color);
 }

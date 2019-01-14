@@ -47,8 +47,7 @@ namespace JW_GUI
 
 	protected:
 		LPDIRECT3DDEVICE9 m_pDevice;
-		DWORD m_FontColor;
-
+		
 		UNIQUE_PTR<JWBorder> m_Border;
 		UNIQUE_PTR<JWFont> m_Font;
 		bool m_bDrawBorder;
@@ -97,12 +96,15 @@ namespace JW_GUI
 		// Setter
 		virtual void JWControl::SetRegion();
 		virtual void JWControl::SetControlState(CONTROL_STATE State);
+		virtual void JWControl::SetBackgroundAlpha(BYTE Alpha) {};
+		virtual void JWControl::SetBackgroundXRGB(DWORD XRGB) {};
 		virtual void JWControl::SetAlignmentHorz(ALIGNMENT_HORZ Align);
 		virtual void JWControl::SetAlignmentVert(ALIGNMENT_VERT Align);
 		virtual void JWControl::SetDrawBorder(bool Value);
-		virtual void JWControl::SetFontColor(DWORD Color);
 		virtual void JWControl::SetSize(D3DXVECTOR2 Size) {};
 		virtual void JWControl::SetPosition(D3DXVECTOR2 Position) {};
+		virtual void JWControl::SetFontAlpha(BYTE Alpha);
+		virtual void JWControl::SetFontXRGB(DWORD XRGB);
 
 		// Getter only
 		// This function has no setter, becuase control type is decided when the control is created

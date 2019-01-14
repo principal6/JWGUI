@@ -116,6 +116,23 @@ void JWTitleBar::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool Is
 {
 	// Check control states
 	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown);
+
+	if (m_ControlState == JWControl::CONTROL_STATE::Hover)
+	{
+		m_bOnWindowMove = false;
+	}
+	else if (m_ControlState == JWControl::CONTROL_STATE::Pressed)
+	{
+		if (m_bOnWindowMove == false)
+		{
+			m_bOnWindowMove = true;
+		}
+	}
+	else
+	{
+		m_bOnWindowMove = false;
+	}
+
 	m_SysMin->UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown);
 	m_SysMax->UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown);
 	m_SysExit->UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown);
@@ -182,14 +199,6 @@ void JWTitleBar::DoubleClickMaximize(POINT MouePosition)
 
 auto JWTitleBar::CanMoveWindow(POINT CapturedMousePositionClient)->bool
 {
-	if (!m_bOnWindowMove)
-	{
-		if (IsMouseOnRegion(CapturedMousePositionClient))
-		{
-			// Title bar move
-			m_bOnWindowMove = true;
-		}
-	}
 	return m_bOnWindowMove;
 }
 

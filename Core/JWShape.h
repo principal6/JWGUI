@@ -25,7 +25,6 @@ namespace JW_GUI
 		D3DXVECTOR2 m_Size;
 		D3DXVECTOR2 m_Position;
 		DWORD m_Color;
-		int m_Alpha;
 
 	protected:
 		void JWShape::ClearVertexAndIndexData();
@@ -56,14 +55,13 @@ namespace JW_GUI
 		// Setter
 		void JWShape::SetPosition(D3DXVECTOR2 Position);
 		void JWShape::SetSize(D3DXVECTOR2 Size);
-		void JWShape::SetAlpha(int Alpha);
-
-		// Setter only
-		void JWShape::SetColor(DWORD Color);
+		void JWShape::SetAlpha(BYTE Alpha);
+		void JWShape::SetXRGB(DWORD XRGB);
 
 		// Getter
 		auto JWShape::GetPosition() const->D3DXVECTOR2;
 		auto JWShape::GetSize() const->D3DXVECTOR2;
-		auto JWShape::GetAlpha() const->int;
+		auto JWShape::GetAlpha() const->BYTE;
+		auto JWShape::GetXRGB() const->DWORD;
 	};
 };

@@ -262,6 +262,34 @@ auto JWFont::SetPosition(D3DXVECTOR2 Offset)->Error
 	return Error::NullVertex;
 }
 
+auto JWFont::SetAlpha(BYTE Alpha)->Error
+{
+	if (m_Vertices.size())
+	{
+		for (VertexShape& iterator : m_Vertices)
+		{
+			JW_GUI::SetAlpha(&iterator.color, Alpha);
+		}
+
+		UpdateVertexBuffer();
+	}
+	return Error::NullVertex;
+}
+
+auto JWFont::SetXRGB(DWORD Color)->Error
+{
+	if (m_Vertices.size())
+	{
+		for (VertexShape& iterator : m_Vertices)
+		{
+			JW_GUI::SetXRGB(&iterator.color, Color);
+		}
+
+		UpdateVertexBuffer();
+	}
+	return Error::NullVertex;
+}
+
 void JWFont::Draw() const
 {
 	// Set alpha blending on
@@ -275,10 +303,15 @@ void JWFont::Draw() const
 		// Texture exists
 		m_pDevice->SetTexture(0, m_pTexture);
 
-		// Texture alpha * Diffuse color alpha
+		// Texture alpha * Diffuse alpha
 		m_pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 		m_pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 		m_pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+
+		// Texture color * Diffuse color
+		m_pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		m_pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		m_pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 	}
 
 	m_pDevice->SetStreamSource(0, m_pVertexBuffer, 0, sizeof(VertexShape));

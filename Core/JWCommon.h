@@ -36,14 +36,19 @@
 namespace JW_GUI
 {
 	using DWORD = unsigned long;
+	using B_RUNNING = bool;
 
 	static const UINT MAX_PATH_LEN = 260;
-	static const wchar_t ASSET_DIR[] = L"Asset\\";
-	static const wchar_t FONT_NAME[] = L"megt20all.fnt";
 	static const UINT MAX_TEXT_LEN = 20;
 
-	static const UINT MIN_WINDOW_WIDTH = 100;
-	static const UINT MIN_WINDOW_HEIGHT = 60;
+	// @warning:
+	// The followings values must not be <UINT> but <int> for the comparison with negative numbers
+	static const int MIN_WINDOW_WIDTH = 100;
+	static const int MIN_WINDOW_HEIGHT = 60;
+
+	static const wchar_t* ASSET_DIR = L"Asset\\";
+	static const wchar_t* FONT_NAME = L"megt20all.fnt";
+	static const wchar_t* DEFAULT_CURSOR = IDC_ARROW;
 
 	static const DWORD D3DFVF_ALL = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 	static const DWORD D3DFVF_NO_TEXTURE = D3DFVF_XYZRHW | D3DFVF_DIFFUSE;
@@ -84,7 +89,6 @@ namespace JW_GUI
 		VertexBufferNotCreated,
 		IndexBufferNotCreated,
 		// Core class instance creation failure
-		OutterWindowNotCreated,
 		DXDeviceNotCreated,
 		FontNotCreated,
 		ShapeNotCreated,
@@ -101,6 +105,8 @@ namespace JW_GUI
 		// GUIWindow class creation failure
 		TitlebarNotcreated,
 		GUINotCreated,
+		OutterWindowNotCreated,
+		OutterWindowAlreadyExists,
 		// Lock
 		VertexBufferNotLocked,
 		IndexBufferNotLocked,

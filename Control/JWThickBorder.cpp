@@ -98,32 +98,35 @@ void JWThickBorder::SetCursorAndMoveID()
 	if (m_RegionWithMouseOver[0] || m_RegionWithMouseOver[2])
 	{
 		// Top, bottom
-		SetCursor(LoadCursor(nullptr, IDC_SIZENS));
+		m_CursorID = IDC_SIZENS;
 	}
-	else if (m_RegionWithMouseOver[1] || m_RegionWithMouseOver[3])
+	if (m_RegionWithMouseOver[1] || m_RegionWithMouseOver[3])
 	{
 		// Right, left
-		SetCursor(LoadCursor(nullptr, IDC_SIZEWE));
+		m_CursorID = IDC_SIZEWE;
 	}
 	if ((m_RegionWithMouseOver[4] || m_RegionWithMouseOver[7]))
 	{
 		// Top-right or Bottom-left
-		SetCursor(LoadCursor(nullptr, IDC_SIZENESW));
+		m_CursorID = IDC_SIZENESW;
 	}
 	if ((m_RegionWithMouseOver[5] || m_RegionWithMouseOver[6]))
 	{
 		// Top-left or Bottom-right
-		SetCursor(LoadCursor(nullptr, IDC_SIZENWSE));
+		m_CursorID = IDC_SIZENWSE;
 	}
 }
 
-void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown)
+void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown, bool StayPressed)
 {
-	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown);
+	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown, StayPressed);
 
 	if (m_ControlState == JWControl::CONTROL_STATE::Hover)
 	{
 		SetCursorAndMoveID();
+
+		SetCursor(LoadCursor(nullptr, m_CursorID));
+
 		m_bCanResizeWindow = false;
 	}
 	else if (m_ControlState == JWControl::CONTROL_STATE::Pressed)
@@ -131,7 +134,10 @@ void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool
 		if (m_bCanResizeWindow == false)
 		{
 			SetCursorAndMoveID();
+
 			m_CapturedMoveID = m_MoveID;
+			m_CapturedCursorID = m_CursorID;
+
 			m_bCanResizeWindow = true;
 		}
 	}
@@ -144,6 +150,11 @@ void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool
 auto JWThickBorder::GetCapturedMoveID()->FLAG
 {
 	return m_CapturedMoveID;
+}
+
+auto JWThickBorder::GetCapturedCursorID()->LPCWSTR
+{
+	return m_CapturedCursorID;
 }
 
 auto JWThickBorder::CanResizeWindow()->bool

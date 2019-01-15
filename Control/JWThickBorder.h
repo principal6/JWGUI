@@ -13,6 +13,8 @@ namespace JW_GUI
 		FLAG m_MoveID;
 		bool m_bCanResizeWindow;
 		FLAG m_CapturedMoveID;
+		LPWSTR m_CursorID;
+		LPWSTR m_CapturedCursorID;
 
 	private:
 		virtual void JWThickBorder::SetRegion() override;
@@ -27,13 +29,15 @@ namespace JW_GUI
 
 		virtual void JWThickBorder::MakeThickBorder(D3DXVECTOR2 Size);
 
-		virtual void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown) override;
+		virtual void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown,
+			bool StayPressed = true) override;
 
 		virtual void JWThickBorder::Draw();
 
 		virtual void JWThickBorder::SetSize(D3DXVECTOR2 Size);
 
 		virtual auto JWThickBorder::GetCapturedMoveID()->FLAG;
+		virtual auto JWThickBorder::GetCapturedCursorID()->LPCWSTR;
 
 		virtual auto JWThickBorder::CanResizeWindow()->bool;
 		virtual void JWThickBorder::StopResizeWindow();

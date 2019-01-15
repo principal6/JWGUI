@@ -17,7 +17,7 @@ namespace JW_GUI
 		UNIQUE_PTR<JWOutterWindow> m_OutterWindow;
 		UNIQUE_PTR<JWInput> m_Input;
 
-		bool m_bRunning;
+		B_RUNNING m_bRunning;
 
 	private:
 		void JWGUI::Destroy();

@@ -20,20 +20,23 @@ namespace JW_GUI
 			Maximized,
 		};
 
+		enum class WindowType
+		{
+			OutterWindow,
+			InnerWindow,
+		};
+
 	protected:
 		static bool ms_IsWindowCaptured;
 		static bool ms_onMouseMove;
 		static bool ms_onMouseDoubleCliked;
 		static POINT ms_MousePosition;
-		static POINT ms_MouseDownPosition;
+		static POINT ms_CapturedMousePosition;
 
 		UNIQUE_PTR<JWThickBorder> m_WindowBorder;
 		UNIQUE_PTR<JWTitleBar> m_TitleBar;
 
 		VECTOR<JWControl*> m_pControls;
-
-		bool m_bCanResize;
-		bool m_bCanMove;
 
 		HINSTANCE m_hInstance;
 		HWND m_hWnd;
@@ -54,8 +57,11 @@ namespace JW_GUI
 
 		WindowState m_WindowState;
 
+	protected:
+		virtual void SetCapturedMousePosition(Int2 Value);
+
 	public:
-		JWWindow();
+		JWWindow() {};
 		virtual ~JWWindow() {};
 
 		// Creation & destruction
@@ -69,20 +75,20 @@ namespace JW_GUI
 		virtual void UpdateControls();
 
 		// Draw
-		virtual void Draw();
+		virtual void Draw() {};
 
 		// Window state change
 		virtual void ShowJWWindow();
 		virtual void MinimizeWindow();
 		virtual void MaximizeWindow();
 		virtual void RestoreWindow();
-		virtual void ShutdownWindow();
-		virtual void ResizeWindow();
+		virtual void ResizeWindow() {};
+		virtual void ShutdownWindow() {};
 
-		// Recall
-		virtual auto IsMouseLeftButtonDown() const->bool;
-		virtual auto IsMouseLeftButtonUp() const->bool;
+		// On
+		virtual auto OnMouseLeftButtonDown() const->bool;
 		virtual auto OnMouseMove() const->bool;
+		virtual auto OnCapturedMouseMove() const->bool;
 		virtual auto OnMouseDoubleClicked()->bool;
 
 		// Setter
@@ -95,7 +101,7 @@ namespace JW_GUI
 
 		// Getter only
 		virtual auto GetMousePosition() const->Int2;
-		virtual auto GetMouseDownPosition() const->Int2;
+		virtual auto GetCapturedMousePosition() const->Int2;
 		virtual auto GetCapturedWindowPosition() const->Int2;
 		virtual auto GetCapturedWindowSize() const->Int2;
 	};

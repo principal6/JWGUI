@@ -74,7 +74,7 @@ void JWGUI::Destroy()
 void JWGUI::DoEvents()
 {
 	// Set defualt cursor
-	SetCursor(LoadCursor(nullptr, IDC_ARROW));
+	SetCursor(LoadCursor(nullptr, DEFAULT_CURSOR));
 
 	m_bRunning = m_OutterWindow->Update();
 

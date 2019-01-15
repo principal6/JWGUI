@@ -86,7 +86,8 @@ namespace JW_GUI
 			DWORD ColorBG = JWCOLOR_LABEL) {};
 
 		// Update
-		virtual void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown);
+		virtual void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown,
+			bool StayPressed = false);
 
 		// Draw
 		virtual void JWControl::Draw() {};

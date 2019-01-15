@@ -3,6 +3,7 @@
 using namespace JW_GUI;
 
 // Static member variable declaration
+const float JWTitleBar::TITLEBAR_SPARE_WIDTH = 100.0f;
 const float JWTitleBar::TITLEBAR_HEIGHT = 24.0f;
 const float JWTitleBar::ICON_WIDTH = 24.0f;
 const float JWTitleBar::ICON_PAD = 4.0f;
@@ -77,7 +78,7 @@ void JWTitleBar::UpdateSize(Int2 WindowSize)
 	// Set title bar size
 	m_Size = D3DXVECTOR2(LabelSizeX, TITLEBAR_HEIGHT);
 
-	m_BG->SetSize(D3DXVECTOR2(NewWindowSize.x, TITLEBAR_HEIGHT));
+	m_BG->SetSize(D3DXVECTOR2(NewWindowSize.x + TITLEBAR_SPARE_WIDTH, TITLEBAR_HEIGHT));
 
 	m_Label->SetSize(D3DXVECTOR2(LabelSizeX, TITLEBAR_HEIGHT));
 
@@ -112,10 +113,10 @@ void JWTitleBar::Draw()
 	m_Icon->Draw();
 }
 
-void JWTitleBar::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown)
+void JWTitleBar::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown, bool StayPressed)
 {
 	// Check control states
-	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown);
+	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown, StayPressed);
 
 	if (m_ControlState == JWControl::CONTROL_STATE::Hover)
 	{
@@ -210,4 +211,9 @@ void JWTitleBar::StopWindow()
 void JWTitleBar::ToggleSysMaxButton()
 {
 	m_SysMax->ToggleDrawAlt();
+}
+
+auto JWTitleBar::GetSystemButtonsWidth()->int
+{
+	return static_cast<int>(SYSBUTTON_WIDTH * 3);
 }

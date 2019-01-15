@@ -6,6 +6,7 @@ using namespace JW_GUI;
 bool JWOutterWindow::ms_onCaptureWindow = false;
 bool JWOutterWindow::ms_onReleaseWindow = false;
 bool JWOutterWindow::ms_onRestoreWindow = false;
+bool JWOutterWindow::ms_bRunning = false;
 
 inline auto GetWindowShowState(HWND hWnd)->UINT
 {
@@ -22,14 +23,14 @@ LRESULT CALLBACK JW_GUI::WindowProcedure(HWND hWnd, UINT Message, WPARAM wParam,
 		JWOutterWindow::ms_onMouseDoubleCliked = true;
 		break;
 	case WM_LBUTTONDOWN:
-		if (!JWOutterWindow::ms_IsWindowCaptured)
+		if (!JWWindow::ms_IsWindowCaptured)
 		{
 			JWOutterWindow::ms_IsWindowCaptured = true;
 			JWOutterWindow::ms_onCaptureWindow = true;
 		}
 		break;
 	case WM_LBUTTONUP:
-		if (JWOutterWindow::ms_IsWindowCaptured)
+		if (JWWindow::ms_IsWindowCaptured)
 		{
 			JWOutterWindow::ms_IsWindowCaptured = false;
 			JWOutterWindow::ms_onReleaseWindow = true;
@@ -49,7 +50,7 @@ LRESULT CALLBACK JW_GUI::WindowProcedure(HWND hWnd, UINT Message, WPARAM wParam,
 		}
 		break;
 	case WM_DESTROY:
-		PostQuitMessage(0);
+		JWOutterWindow::ms_bRunning = false;
 		return 0;
 	}
 	return(DefWindowProc(hWnd, Message, wParam, lParam));
@@ -57,9 +58,14 @@ LRESULT CALLBACK JW_GUI::WindowProcedure(HWND hWnd, UINT Message, WPARAM wParam,
 
 auto JWOutterWindow::Create(WSTRING Name, Int2 Position, Int2 WindowSize, DWORD BackColor)->Error
 {
+	// @warning:
+	// You can create the outterwindow only once in the program
+	if (m_hWnd)
+		return Error::OutterWindowAlreadyExists;
+
 	JWWindow::Create(Name, Position, WindowSize, BackColor);
 
-	m_bRunning = true;
+	ms_bRunning = true;
 	m_hInstance = GetModuleHandle(nullptr);
 
 	WNDCLASSW r_WndClass;
@@ -100,37 +106,38 @@ void JWOutterWindow::Draw()
 		}	
 	}
 
-	// Always draw the title bar
+	// Draw the title bar
 	m_TitleBar->Draw();
 
-	// When the window is maximized, the border is not drawn
+	// Draw the thick border, but when the window is maximized, it's not drawn
 	if (m_WindowState != WindowState::Maximized)
 		m_WindowBorder->Draw();
 }
 
-auto JWOutterWindow::Update()->bool
+auto JWOutterWindow::Update()->B_RUNNING
 {
-	if (m_bRunning == false)
-		return m_bRunning;
+	if (ms_bRunning == false)
+		return ms_bRunning;
 
 	// Update all controls
 	JWWindow::UpdateControls();
 
+	// Capture the window
 	if (ms_onCaptureWindow)
 	{
-		RECT capturedWindowRect;
+		RECT capturedRect;
 
 		// Capture the mouse position
-		GetCursorPos(&ms_MouseDownPosition);
+		GetCursorPos(&ms_CapturedMousePosition);
 
 		// Capture the window position
-		GetWindowRect(m_hWnd, &capturedWindowRect);
-		m_CapturedWindowPosition.x = capturedWindowRect.left;
-		m_CapturedWindowPosition.y = capturedWindowRect.top;
+		GetWindowRect(m_hWnd, &capturedRect);
+		m_CapturedWindowPosition.x = capturedRect.left;
+		m_CapturedWindowPosition.y = capturedRect.top;
 
 		// Capture the window size
-		m_CapturedWindowSize.x = capturedWindowRect.right - capturedWindowRect.left;
-		m_CapturedWindowSize.y = capturedWindowRect.bottom - capturedWindowRect.top;
+		m_CapturedWindowSize.x = capturedRect.right - capturedRect.left;
+		m_CapturedWindowSize.y = capturedRect.bottom - capturedRect.top;
 
 		// Capture the window
 		SetCapture(m_hWnd);
@@ -138,9 +145,9 @@ auto JWOutterWindow::Update()->bool
 		ms_onCaptureWindow = false;
 	}
 
+	// Release the captured window
 	if (ms_onReleaseWindow)
 	{
-		// Release the captured window
 		ReleaseCapture();
 
 		ms_onReleaseWindow = false;
@@ -175,7 +182,7 @@ auto JWOutterWindow::Update()->bool
 	if (m_TitleBar->OnSystemExit())
 	{
 		ShutdownWindow();
-		return m_bRunning;
+		return ms_bRunning;
 	}
 
 	if (OnMouseDoubleClicked())
@@ -183,25 +190,54 @@ auto JWOutterWindow::Update()->bool
 		m_TitleBar->DoubleClickMaximize(GetMousePosition());
 	}
 
-	if (IsMouseLeftButtonDown())
+	if (OnCapturedMouseMove())
 	{
-		// @warning: If the window is maximized, it cannot be resized nor moved
+		// @warning: If the window is maximized, it cannot be resized
 		if (m_WindowState != WindowState::Maximized)
 		{
 			if (m_WindowBorder->CanResizeWindow()) // Resize window
 			{
 				ResizeWindow();
 			}
-			else if (m_TitleBar->CanMoveWindow(GetMouseDownPosition())) // Move window
+			else if (m_TitleBar->CanMoveWindow(GetCapturedMousePosition())) // Move window
 			{
-				Int2 NewPos = GetCapturedWindowPosition() + GetMousePosition() - GetMouseDownPosition();
+				Int2 NewPos = GetCapturedWindowPosition() + GetMousePosition() - GetCapturedMousePosition();
 				SetWindowPosition(NewPos);
+			}
+		}
+		else
+		{
+			// Move window when maximized
+			if (m_TitleBar->CanMoveWindow(GetCapturedMousePosition())) // Move window
+			{
+				// @warning:
+				// GetCapturedMousePosition() should be called before MaximizeWindow()
+				// becasue MaximizeWindow() changes the window size and its rect, and so
+				// the captured mouse position's ScreenToClient() changes
+				Int2 NewCapturedMousePos = GetCapturedMousePosition();
+				
+				// Unmaximize the window
+				m_TitleBar->ToggleSysMaxButton();
+				MaximizeWindow();
+
+				// @warning:
+				// without UNMAXIMEZ_PADDING, the pointer touches the minimize button,
+				// so it stops moving the window
+				if (NewCapturedMousePos.x > m_WindowSize.x - m_TitleBar->GetSystemButtonsWidth() - UNMAXIMIZE_PADDING)
+				{
+					NewCapturedMousePos.x = m_WindowSize.x - m_TitleBar->GetSystemButtonsWidth() - UNMAXIMIZE_PADDING;
+				}
+
+				// When maximized, the window's position is (0, 0)
+				SetWindowPosition(Int2(0, 0));
+
+				SetCapturedMousePosition(NewCapturedMousePos);
 			}
 		}
 	}
 	else
 	{
-		// End moving and resizing window
+		// Stop moving and resizing the window
 		m_TitleBar->StopWindow();
 		m_WindowBorder->StopResizeWindow();
 	}
@@ -291,7 +327,9 @@ void JWOutterWindow::ResizeWindow()
 {
 	JWWindow::ResizeWindow();
 
-	Int2 MovedPos = GetMousePosition() - GetMouseDownPosition();
+	SetCursor(LoadCursor(nullptr, m_WindowBorder->GetCapturedCursorID()));
+
+	Int2 MovedPos = GetMousePosition() - GetCapturedMousePosition();
 	Int2 NewSize = GetCapturedWindowSize();
 	Int2 NewPos;
 
@@ -301,65 +339,58 @@ void JWOutterWindow::ResizeWindow()
 		// top NS
 		NewSize.y -= MovedPos.y;
 
-		NewPos.x = GetCapturedWindowPosition().x;
-		NewPos.y = GetCapturedWindowPosition().y + MovedPos.y;
+		MovedPos.x = 0;
 		break;
 	case 1:
 		// right EW
 		NewSize.x += MovedPos.x;
 
-		NewPos.x = GetCapturedWindowPosition().x;
-		NewPos.y = GetCapturedWindowPosition().y;
+		MovedPos = Int2(0, 0);
 		break;
 	case 2:
 		// bottom NS
 		NewSize.y += MovedPos.y;
 
-		NewPos.x = GetCapturedWindowPosition().x;
-		NewPos.y = GetCapturedWindowPosition().y;
+		MovedPos = Int2(0, 0);
 		break;
 	case 3:
 		// left EW
 		NewSize.x -= MovedPos.x;
 
-		NewPos.x = GetCapturedWindowPosition().x + MovedPos.x;
-		NewPos.y = GetCapturedWindowPosition().y;
+		MovedPos.y = 0;
 		break;
 	case 4:
 		// top-right NESW
 		NewSize.x += MovedPos.x;
 		NewSize.y -= MovedPos.y;
 
-		NewPos.x = GetCapturedWindowPosition().x;
-		NewPos.y = GetCapturedWindowPosition().y + MovedPos.y;
+		MovedPos.x = 0;
 		break;
 	case 5:
 		// top-left NESW
 		NewSize.x -= MovedPos.x;
 		NewSize.y -= MovedPos.y;
 
-		NewPos.x = GetCapturedWindowPosition().x + MovedPos.x;
-		NewPos.y = GetCapturedWindowPosition().y + MovedPos.y;
 		break;
 	case 6:
 		// bottom-right NWSE
 		NewSize.x += MovedPos.x;
 		NewSize.y += MovedPos.y;
 
-		NewPos.x = GetCapturedWindowPosition().x;
-		NewPos.y = GetCapturedWindowPosition().y;
+		MovedPos = Int2(0, 0);
 		break;
 	case 7:
 		// bottom-left NWSE
 		NewSize.x -= MovedPos.x;
 		NewSize.y += MovedPos.y;
 
-		NewPos.x = GetCapturedWindowPosition().x + MovedPos.x;
-		NewPos.y = GetCapturedWindowPosition().y;
+		MovedPos.y = 0;
 		break;
 	default:
 		break;
 	}
+
+	NewPos = GetCapturedWindowPosition() + MovedPos;
 
 	if (NewSize.x < MIN_WINDOW_WIDTH)
 		NewSize.x = MIN_WINDOW_WIDTH;
@@ -379,7 +410,7 @@ void JWOutterWindow::ShutdownWindow()
 {
 	JWWindow::ShutdownWindow();
 
-	m_bRunning = false;
+	ms_bRunning = false;
 }
 
 void JWOutterWindow::UpdateWindowSize()

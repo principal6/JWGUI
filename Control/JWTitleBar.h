@@ -9,6 +9,7 @@ namespace JW_GUI
 	class JWTitleBar final : public JWControl
 	{
 	private:
+		static const float TITLEBAR_SPARE_WIDTH;
 		static const float TITLEBAR_HEIGHT;
 		static const float ICON_WIDTH;
 		static const float ICON_PAD;
@@ -37,7 +38,8 @@ namespace JW_GUI
 		void JWTitleBar::Make(Int2 WindowSize, WSTRING WindowName);
 
 		// Update
-		void JWTitleBar::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown) override;
+		void JWTitleBar::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown,
+			bool StayPressed = false) override;
 		void JWTitleBar::UpdateSize(Int2 WindowSize);
 
 		// Draw
@@ -53,5 +55,8 @@ namespace JW_GUI
 		void JWTitleBar::StopWindow();
 		void JWTitleBar::ToggleSysMaxButton();
 		void JWTitleBar::DoubleClickMaximize(POINT MouePosition);
+
+		// Getter
+		auto JWTitleBar::GetSystemButtonsWidth()->int;
 	};
 };

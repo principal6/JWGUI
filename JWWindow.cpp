@@ -7,13 +7,7 @@ bool JWWindow::ms_IsWindowCaptured = false;
 bool JWWindow::ms_onMouseMove = false;
 bool JWWindow::ms_onMouseDoubleCliked = false;
 POINT JWWindow::ms_MousePosition;
-POINT JWWindow::ms_MouseDownPosition;
-
-JWWindow::JWWindow()
-{
-	m_bCanResize = false;
-	m_bCanMove = false;
-}
+POINT JWWindow::ms_CapturedMousePosition;
 
 auto JWWindow::Create(WSTRING Name, Int2 Position, Int2 WindowSize, DWORD BackColor)->Error
 {
@@ -110,21 +104,16 @@ auto JWWindow::GetControlPointer(UINT Control_ID)->JWControl* const
 
 void JWWindow::UpdateControls()
 {
-	m_WindowBorder->UpdateState(GetMousePosition(), GetMouseDownPosition(), IsMouseLeftButtonDown());
-	m_TitleBar->UpdateState(GetMousePosition(), GetMouseDownPosition(), IsMouseLeftButtonDown());
+	m_WindowBorder->UpdateState(GetMousePosition(), GetCapturedMousePosition(), OnMouseLeftButtonDown());
+	m_TitleBar->UpdateState(GetMousePosition(), GetCapturedMousePosition(), OnMouseLeftButtonDown());
 
 	if (m_pControls.size())
 	{
 		for (JWControl* iterator : m_pControls)
 		{
-			iterator->UpdateState(GetMousePosition(), GetMouseDownPosition(), IsMouseLeftButtonDown());
+			iterator->UpdateState(GetMousePosition(), GetCapturedMousePosition(), OnMouseLeftButtonDown());
 		}
 	}
-}
-
-void JWWindow::Draw()
-{
-
 }
 
 void JWWindow::ShowJWWindow()
@@ -159,29 +148,26 @@ void JWWindow::RestoreWindow()
 	}
 }
 
-void JWWindow::ResizeWindow()
-{
-
-}
-
-void JWWindow::ShutdownWindow()
-{
-	
-}
-
-auto JWWindow::IsMouseLeftButtonDown() const->bool
+auto JWWindow::OnMouseLeftButtonDown() const->bool
 {
 	return ms_IsWindowCaptured;
-}
-
-auto JWWindow::IsMouseLeftButtonUp() const->bool
-{
-	return !ms_IsWindowCaptured;
 }
 
 auto JWWindow::OnMouseMove() const->bool
 {
 	return ms_onMouseMove;
+}
+
+auto JWWindow::OnCapturedMouseMove() const->bool
+{
+	if (JWWindow::ms_IsWindowCaptured)
+	{
+		if ((ms_CapturedMousePosition.x != ms_MousePosition.x) || (ms_CapturedMousePosition.y != ms_MousePosition.y))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 auto JWWindow::OnMouseDoubleClicked()->bool
@@ -200,6 +186,11 @@ auto JWWindow::OnMouseDoubleClicked()->bool
 void JWWindow::SetWindowPosition(Int2 Value)
 {
 	m_WindowPosition = Value;
+}
+
+void JWWindow::SetCapturedMousePosition(Int2 Value)
+{
+	ms_CapturedMousePosition = Value;
 }
 
 void JWWindow::SetWindowSize(Int2 Value)
@@ -234,9 +225,9 @@ auto JWWindow::GetMousePosition() const->Int2
 	return Result;
 }
 
-auto JWWindow::GetMouseDownPosition() const->Int2
+auto JWWindow::GetCapturedMousePosition() const->Int2
 {
-	POINT Result = ms_MouseDownPosition;
+	POINT Result = ms_CapturedMousePosition;
 	ScreenToClient(m_hWnd, &Result);
 	return Result;
 }

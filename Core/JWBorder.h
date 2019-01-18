@@ -21,8 +21,12 @@ namespace JW_GUI
 		auto JWBorder::Create(LPDIRECT3DDEVICE9 pDevice)->Error;
 
 		void JWBorder::MakeBorder(D3DXVECTOR2 Size);
-		void JWBorder::UpdateBorder(D3DXVECTOR2 Size);
+
+		void JWBorder::UpdateBorder();
 
 		void JWBorder::Draw();
+
+		void JWBorder::SetSize(D3DXVECTOR2 Size);
+		void JWBorder::SetPosition(D3DXVECTOR2 Position);
 	};
 };

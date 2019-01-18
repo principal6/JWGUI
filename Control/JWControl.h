@@ -45,6 +45,14 @@ namespace JW_GUI
 			Clicked,
 		};
 
+		enum class BUTTON_TYPE
+		{
+			SystemMinimize,
+			SystemMaximize,
+			SystemExit,
+			CommandButton,
+		};
+
 	protected:
 		LPDIRECT3DDEVICE9 m_pDevice;
 		
@@ -67,6 +75,9 @@ namespace JW_GUI
 		POINT m_MousePosition;
 		POINT m_MouseDownPosition;
 
+		D3DXVECTOR2 m_InnerWindowPosition;
+		D3DXVECTOR2 m_OutterWindowPosition;
+
 	protected:
 		virtual auto JWControl::MakeBorder()->Error;
 		virtual void JWControl::UpdateBorder();
@@ -80,14 +91,16 @@ namespace JW_GUI
 		// Creation
 		virtual auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice)->Error;
 
-		// Make
+		// MakeOutter
 		// @warning: these functions are defined in each sub-class
 		virtual void JWControl::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont = JWCOLOR_FONT,
 			DWORD ColorBG = JWCOLOR_LABEL) {};
+		virtual void JWControl::MakeCommandButton(WSTRING Text, D3DXVECTOR2 Size) {};
+		virtual void JWControl::MakeSystemButton(BUTTON_TYPE Type, D3DXVECTOR2 Size) {};
 
 		// Update
 		virtual void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown,
-			bool StayPressed = false);
+			bool WindowMaximized = false, bool StayPressed = false);
 
 		// Draw
 		virtual void JWControl::Draw() {};
@@ -95,17 +108,18 @@ namespace JW_GUI
 		virtual void JWControl::DrawString();
 
 		// Setter
-		virtual void JWControl::SetRegion();
+		virtual void JWControl::SetRegion(D3DXVECTOR2 Position);
 		virtual void JWControl::SetControlState(CONTROL_STATE State);
 		virtual void JWControl::SetBackgroundAlpha(BYTE Alpha) {};
 		virtual void JWControl::SetBackgroundXRGB(DWORD XRGB) {};
 		virtual void JWControl::SetAlignmentHorz(ALIGNMENT_HORZ Align);
 		virtual void JWControl::SetAlignmentVert(ALIGNMENT_VERT Align);
 		virtual void JWControl::SetDrawBorder(bool Value);
-		virtual void JWControl::SetSize(D3DXVECTOR2 Size) {};
-		virtual void JWControl::SetPosition(D3DXVECTOR2 Position) {};
+		virtual void JWControl::SetSize(D3DXVECTOR2 Size);
+		virtual void JWControl::SetControlPosition(D3DXVECTOR2 Position);
 		virtual void JWControl::SetFontAlpha(BYTE Alpha);
 		virtual void JWControl::SetFontXRGB(DWORD XRGB);
+		virtual void JWControl::SetWindowOffset(D3DXVECTOR2 InnerWindowPosition, D3DXVECTOR2 OutterWindowPosition);
 
 		// Getter only
 		// This function has no setter, becuase control type is decided when the control is created

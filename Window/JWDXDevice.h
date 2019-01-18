@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JWCommon.h"
+#include "../Core/JWCommon.h"
 
 namespace JW_GUI
 {

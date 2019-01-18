@@ -867,7 +867,7 @@ public:
     void DeleteChild( XMLNode* node );
 
     /**
-    	Make a copy of this node, but not its children.
+    	MakeOutter a copy of this node, but not its children.
     	You may pass in a Document pointer that will be
     	the owner of the new Node. If the 'document' is
     	null, then the node returned will be allocated
@@ -878,7 +878,7 @@ public:
     virtual XMLNode* ShallowClone( XMLDocument* document ) const = 0;
 
 	/**
-		Make a copy of this node and all its children.
+		MakeOutter a copy of this node and all its children.
 
 		If the 'target' is null, then the nodes will
 		be allocated in the current document. If 'target'

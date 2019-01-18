@@ -7,7 +7,7 @@ namespace JW_GUI
 	class JWImage : public JWControl
 	{
 	private:
-		UNIQUE_PTR<JWShape> m_Shape;
+		UNIQUE_PTR<JWShape> m_BG;
 
 	public:
 		JWImage() {};
@@ -16,7 +16,7 @@ namespace JW_GUI
 		// Creation
 		virtual auto JWImage::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
-		// Make
+		// MakeOutter
 		virtual void JWImage::MakeImage(WSTRING TextureFileName, D3DXVECTOR2 Size = D3DXVECTOR2(0, 0));
 
 		// Draw
@@ -24,8 +24,6 @@ namespace JW_GUI
 
 		// Setter
 		virtual void JWImage::SetSize(D3DXVECTOR2 Size);
-
-		// Setter only (Getter is in JWControl class)
-		virtual void JWImage::SetPosition(D3DXVECTOR2 Position);
+		virtual void JWImage::SetControlPosition(D3DXVECTOR2 Position) override;
 	};
 };

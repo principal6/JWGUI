@@ -27,6 +27,14 @@ namespace JW_GUI
 		bool m_bOnSystemExit;
 		bool m_bOnWindowMove;
 
+		D3DXVECTOR2 m_WindowSize;
+
+		bool m_bInnerWindow;
+
+	private:
+		inline auto JWTitleBar::GetLabelSizeX()->float;
+		void JWTitleBar::UpdateSizeAndPosition();
+
 	public:
 		JWTitleBar();
 		~JWTitleBar() {};
@@ -34,13 +42,13 @@ namespace JW_GUI
 		// Creation
 		auto JWTitleBar::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
-		// Make
-		void JWTitleBar::Make(Int2 WindowSize, WSTRING WindowName);
+		// MakeOutter
+		void JWTitleBar::MakeOutter(Int2 WindowSize, WSTRING WindowName);
+		void JWTitleBar::MakeInner(Int2 WindowSize, WSTRING WindowName);
 
 		// Update
 		void JWTitleBar::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown,
-			bool StayPressed = false) override;
-		void JWTitleBar::UpdateSize(Int2 WindowSize);
+			bool WindowMaximized = false, bool StayPressed = false) override;
 
 		// Draw
 		void JWTitleBar::Draw();
@@ -52,11 +60,18 @@ namespace JW_GUI
 
 		// Move or stop the window
 		auto JWTitleBar::CanMoveWindow(POINT CapturedMousePositionClient)->bool;
+		auto JWTitleBar::IsMovingWindow()->bool;
 		void JWTitleBar::StopWindow();
 		void JWTitleBar::ToggleSysMaxButton();
 		void JWTitleBar::DoubleClickMaximize(POINT MouePosition);
 
+		// Setter
+		void JWTitleBar::SetSize(D3DXVECTOR2 WindowSize) override;
+		void JWTitleBar::SetControlPosition(D3DXVECTOR2 Position) override;
+		void JWTitleBar::SetWindowOffset(D3DXVECTOR2 InnerWindowPosition, D3DXVECTOR2 OutterWindowPosition) override;
+
 		// Getter
 		auto JWTitleBar::GetSystemButtonsWidth()->int;
+		auto JWTitleBar::GetTitleBarHeight()->int;
 	};
 };

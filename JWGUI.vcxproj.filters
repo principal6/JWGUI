@@ -42,10 +42,20 @@
     <ClCompile Include="Dependency\BMFontParser.cpp">
       <Filter>Dependency</Filter>
     </ClCompile>
-    <ClCompile Include="JWOutterWindow.cpp" />
-    <ClCompile Include="JWWindow.cpp" />
-    <ClCompile Include="Core\JWDXDevice.cpp">
-      <Filter>Core</Filter>
+    <ClCompile Include="Window\JWInnerWindow.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\JWOutterWindow.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\JWWindow.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\JWWindowManager.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\JWDXDevice.cpp">
+      <Filter>Window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +67,9 @@
     </Filter>
     <Filter Include="Dependency">
       <UniqueIdentifier>{7feeccc6-8c37-444d-bb58-36f7b0683287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{8d6ab82b-3a09-49b6-8298-18eb6d5beba9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,10 +116,20 @@
     <ClInclude Include="Dependency\BMFontParser.h">
       <Filter>Dependency</Filter>
     </ClInclude>
-    <ClInclude Include="JWOutterWindow.h" />
-    <ClInclude Include="JWWindow.h" />
-    <ClInclude Include="Core\JWDXDevice.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="Window\JWInnerWindow.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\JWOutterWindow.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\JWWindow.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\JWWindowManager.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\JWDXDevice.h">
+      <Filter>Window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

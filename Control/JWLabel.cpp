@@ -7,8 +7,8 @@ auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice)->Error
 	if (JW_FAILED(JWControl::Create(pDevice)))
 		return Error::ControlNotCreated;
 
-	m_Shape = MAKE_UNIQUE(JWShape)();
-	if (JW_FAILED(m_Shape->Create(pDevice)))
+	m_BG = MAKE_UNIQUE(JWShape)();
+	if (JW_FAILED(m_BG->Create(pDevice)))
 		return Error::ShapeNotCreated;
 
 	m_ControlType = CONTROL_TYPE::Label;
@@ -29,19 +29,19 @@ void JWLabel::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont, DWORD C
 	m_ColorFont = ColorFont;
 
 	// Create background
-	m_Shape->MakeRectangle(Size, ColorBG);
+	m_BG->MakeRectangle(Size, ColorBG);
 
 	// Create border line
 	JWControl::MakeBorder();
 
 	// Update base position
-	SetPosition(m_Position);
+	SetControlPosition(m_Position);
 }
 
 void JWLabel::Draw()
 {
 	// Draw background
-	m_Shape->Draw();
+	m_BG->Draw();
 
 	// Draw text
 	JWControl::DrawString();
@@ -55,42 +55,43 @@ void JWLabel::SetSize(D3DXVECTOR2 Size)
 	m_Size = Size;
 
 	// Set background size
-	m_Shape->SetSize(m_Size);
+	m_BG->SetSize(m_Size);
 
 	// Set border size
 	JWControl::UpdateBorder();
 
 	// Update control region
-	SetRegion();
+	SetRegion(m_Position);
 }
 
-void JWLabel::SetPosition(D3DXVECTOR2 Position)
+void JWLabel::SetControlPosition(D3DXVECTOR2 Position)
 {
-	m_Position = Position;
-
-	// Set background position
-	m_Shape->SetPosition(Position);
-
-	// Set text position
-	m_Font->SetPosition(Position);
+	// Set control position
+	JWControl::SetControlPosition(Position);
 
 	// Set border position
 	JWControl::UpdateBorder();
 
+	// Set background position
+	m_BG->SetPosition(Position + m_InnerWindowPosition);
+
+	// Set text position
+	m_Font->SetPosition(Position + m_InnerWindowPosition);
+
 	// Set control region
-	SetRegion();
+	SetRegion(m_Position);
 }
 
 void JWLabel::SetBackgroundAlpha(BYTE Alpha)
 {
 	JW_GUI::SetAlpha(&m_ColorBackground, Alpha);
 
-	m_Shape->SetAlpha(Alpha);
+	m_BG->SetAlpha(Alpha);
 }
 
 void JWLabel::SetBackgroundXRGB(DWORD XRGB)
 {
 	JW_GUI::SetXRGB(&m_ColorBackground, XRGB);
 
-	m_Shape->SetXRGB(XRGB);
+	m_BG->SetXRGB(XRGB);
 }

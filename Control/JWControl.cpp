@@ -6,6 +6,11 @@ JWControl::JWControl()
 {
 	m_bDrawBorder = false;
 	m_ColorFont = JWCOLOR_FONT;
+
+	m_Position = D3DXVECTOR2(0, 0);
+	m_Size = D3DXVECTOR2(0, 0);
+
+	m_InnerWindowPosition = D3DXVECTOR2(0, 0);
 }
 
 auto JWControl::Create(LPDIRECT3DDEVICE9 pDevice)->Error
@@ -33,7 +38,12 @@ auto JWControl::MakeBorder()->Error
 void JWControl::UpdateBorder()
 {
 	if (m_Border)
-		m_Border->UpdateBorder(m_Size);
+	{
+		m_Border->SetPosition(m_Position + m_InnerWindowPosition);
+		m_Border->SetSize(m_Size);
+
+		m_Border->UpdateBorder();
+	}
 }
 
 void JWControl::DrawBorder()
@@ -47,14 +57,24 @@ void JWControl::DrawString()
 	m_Font->Draw();
 }
 
-void JWControl::SetRegion()
+void JWControl::SetRegion(D3DXVECTOR2 Position)
 {
-	m_Region = REGION(m_Position, m_Size);
+	m_Region = REGION(Position, m_Size);
 }
 
 void JWControl::SetControlState(CONTROL_STATE State)
 {
 	m_ControlState = State;
+}
+
+void JWControl::SetSize(D3DXVECTOR2 Size)
+{
+	m_Size = Size;
+}
+
+void JWControl::SetControlPosition(D3DXVECTOR2 Position)
+{
+	m_Position = Position;
 }
 
 void JWControl::SetAlignmentHorz(ALIGNMENT_HORZ Align)
@@ -84,6 +104,15 @@ void JWControl::SetFontXRGB(DWORD XRGB)
 	JW_GUI::SetXRGB(&m_ColorFont, XRGB);
 
 	m_Font->SetXRGB(m_ColorFont);
+}
+
+void JWControl::SetWindowOffset(D3DXVECTOR2 InnerWindowPosition, D3DXVECTOR2 OutterWindowPosition)
+{
+	m_InnerWindowPosition = InnerWindowPosition;
+	m_OutterWindowPosition = OutterWindowPosition;
+
+	SetControlPosition(m_Position);
+	SetRegion(m_Position + m_OutterWindowPosition);
 }
 
 auto JWControl::GetControlType() const->JWControl::CONTROL_TYPE
@@ -131,7 +160,8 @@ auto JWControl::IsMouseOnRegion(Int2 MousePosition) const->bool
 	return false;
 }
 
-void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown, bool StayPressed)
+void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown, bool WindowMaximized,
+	bool StayPressed)
 {
 	m_MousePosition = MousePosition;
 	m_MouseDownPosition = MouseDownPosition;
@@ -167,7 +197,15 @@ void JWControl::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsL
 	{
 		if (StayPressed)
 		{
-			if (m_ControlState != JWControl::CONTROL_STATE::Pressed)
+			if (IsLeftButtonDown)
+			{
+				if (m_ControlState != JWControl::CONTROL_STATE::Pressed)
+				{
+					SetControlState(JWControl::CONTROL_STATE::Normal);
+					return;
+				}
+			}
+			else
 			{
 				SetControlState(JWControl::CONTROL_STATE::Normal);
 				return;

@@ -55,7 +55,7 @@ auto JWFont::MakeFont(WSTRING FileName_FNT)->Error
 
 	if (Parse(NewFileName))
 	{
-		// Make rectangles with max size (MAX_TEXT_LEN)
+		// MakeOutter rectangles with max size (MAX_TEXT_LEN)
 		for (UINT i = 0; i < MAX_TEXT_LEN; i++)
 		{
 			m_Vertices.push_back(VertexShape(0, 0, 0, 0));
@@ -176,7 +176,7 @@ auto JWFont::SetText(WSTRING Text)->Error
 	wchar_t Character = 0;
 	wchar_t CharID = 0;
 
-	// Make text images from the text string
+	// MakeOutter text images from the text string
 	for (size_t i = 0; i < m_StringLen; i++)
 	{
 		Character = m_String[i];

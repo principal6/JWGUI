@@ -26,9 +26,10 @@ void JWThickBorder::MakeThickBorder(D3DXVECTOR2 Size)
 
 	// Create border line
 	JWControl::MakeBorder();
-
+	
 	// Update control region
-	SetRegion();
+	SetControlPosition(m_Position);
+	SetRegion(m_Position);
 }
 
 void JWThickBorder::Draw()
@@ -42,25 +43,37 @@ void JWThickBorder::SetSize(D3DXVECTOR2 Size)
 	m_Size.x = Size.x - 1;
 	m_Size.y = Size.y - 1;
 
-	// Set border size
+	// Update the border
 	JWControl::UpdateBorder();
 
 	// Update control region
-	SetRegion();
+	SetRegion(m_Position);
 }
 
-void JWThickBorder::SetRegion()
+void JWThickBorder::SetControlPosition(D3DXVECTOR2 Position)
 {
-	m_Region[0] = REGION(m_Position, D3DXVECTOR2(m_Size.x, 1.0f)); // top
-	m_Region[1] = REGION(D3DXVECTOR2(m_Position.x + m_Size.x - 1.0f, m_Position.y), D3DXVECTOR2(1.0f, m_Size.y)); // right
-	m_Region[2] = REGION(D3DXVECTOR2(m_Position.x, m_Position.y + m_Size.y - 1.0f), D3DXVECTOR2(m_Size.x, 1.0f)); // bottom
-	m_Region[3] = REGION(m_Position, D3DXVECTOR2(1.0f, m_Size.y)); // left
+	// Set control position
+	JWControl::SetControlPosition(Position);
+
+	// Update the border
+	JWControl::UpdateBorder();
+
+	// Update control region
+	SetRegion(Position);
+}
+
+void JWThickBorder::SetRegion(D3DXVECTOR2 Position)
+{
+	m_Region[0] = REGION(Position, D3DXVECTOR2(m_Size.x, 1.0f)); // top
+	m_Region[1] = REGION(D3DXVECTOR2(Position.x + m_Size.x - 1.0f, Position.y), D3DXVECTOR2(1.0f, m_Size.y)); // right
+	m_Region[2] = REGION(D3DXVECTOR2(Position.x, Position.y + m_Size.y - 1.0f), D3DXVECTOR2(m_Size.x, 1.0f)); // bottom
+	m_Region[3] = REGION(Position, D3DXVECTOR2(1.0f, m_Size.y)); // left
 	
-	m_Region[4] = REGION(D3DXVECTOR2(m_Position.x + m_Size.x - 2.0f, m_Position.y), D3DXVECTOR2(2.0f, 2.0f)); // top-right
-	m_Region[5] = REGION(D3DXVECTOR2(m_Position.x, m_Position.y), D3DXVECTOR2(2.0f, 2.0f)); // top-left
-	m_Region[6] = REGION(D3DXVECTOR2(m_Position.x + m_Size.x - 2.0f, m_Position.y + m_Size.y - 2.0f),
+	m_Region[4] = REGION(D3DXVECTOR2(Position.x + m_Size.x - 2.0f, Position.y), D3DXVECTOR2(2.0f, 2.0f)); // top-right
+	m_Region[5] = REGION(D3DXVECTOR2(Position.x, Position.y), D3DXVECTOR2(2.0f, 2.0f)); // top-left
+	m_Region[6] = REGION(D3DXVECTOR2(Position.x + m_Size.x - 2.0f, Position.y + m_Size.y - 2.0f),
 		D3DXVECTOR2(2.0f, 2.0f)); // bottom-right
-	m_Region[7] = REGION(D3DXVECTOR2(m_Position.x, m_Position.y + m_Size.y - 2.0f),
+	m_Region[7] = REGION(D3DXVECTOR2(Position.x, Position.y + m_Size.y - 2.0f),
 		D3DXVECTOR2(2.0f, 2.0f)); // bottom-left
 }
 
@@ -117,33 +130,22 @@ void JWThickBorder::SetCursorAndMoveID()
 	}
 }
 
-void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown, bool StayPressed)
+void JWThickBorder::UpdateState(Int2 MousePosition, Int2 MouseDownPosition, bool IsLeftButtonDown, bool WindowMaximized,
+	bool StayPressed)
 {
-	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown, StayPressed);
+	JWControl::UpdateState(MousePosition, MouseDownPosition, IsLeftButtonDown, WindowMaximized, StayPressed);
 
-	if (m_ControlState == JWControl::CONTROL_STATE::Hover)
+	// Mouse cursor chagnes when hovering the border
+	SetCursorAndMoveID();
+
+	if ((m_ControlState == JWControl::CONTROL_STATE::Hover) || (m_ControlState == JWControl::CONTROL_STATE::Pressed))
 	{
-		SetCursorAndMoveID();
-
-		SetCursor(LoadCursor(nullptr, m_CursorID));
-
-		m_bCanResizeWindow = false;
-	}
-	else if (m_ControlState == JWControl::CONTROL_STATE::Pressed)
-	{
-		if (m_bCanResizeWindow == false)
+		if (!WindowMaximized)
 		{
-			SetCursorAndMoveID();
-
-			m_CapturedMoveID = m_MoveID;
-			m_CapturedCursorID = m_CursorID;
-
-			m_bCanResizeWindow = true;
+			// @warnging:
+			// Do not change cursor when the window is maximized (because it will not be resized!)
+			SetCursor(LoadCursor(nullptr, m_CursorID));
 		}
-	}
-	else
-	{
-		m_bCanResizeWindow = false;
 	}
 }
 
@@ -157,10 +159,34 @@ auto JWThickBorder::GetCapturedCursorID()->LPCWSTR
 	return m_CapturedCursorID;
 }
 
-auto JWThickBorder::CanResizeWindow()->bool
+auto JWThickBorder::CanResizeWindow(POINT CapturedMousePositionClient)->bool
+{
+	if (IsMouseOnRegion(CapturedMousePositionClient))
+	{
+		SetCursorAndMoveID();
+
+		m_CapturedMoveID = m_MoveID;
+		m_CapturedCursorID = m_CursorID;
+
+		SetCursor(LoadCursor(nullptr, m_CapturedCursorID));
+
+		m_bCanResizeWindow = true;
+	}
+	else
+	{
+		SetCursorAndMoveID();
+
+		m_bCanResizeWindow = false;
+	}
+
+	return m_bCanResizeWindow;
+}
+
+auto JWThickBorder::IsResizingWindow()->bool
 {
 	return m_bCanResizeWindow;
 }
+
 
 void JWThickBorder::StopResizeWindow()
 {

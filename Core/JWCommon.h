@@ -53,6 +53,7 @@ namespace JW_GUI
 	static const DWORD D3DFVF_ALL = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 	static const DWORD D3DFVF_NO_TEXTURE = D3DFVF_XYZRHW | D3DFVF_DIFFUSE;
 	static const DWORD JWCOLOR_PLAIN = D3DCOLOR_XRGB(80, 80, 80);
+	static const DWORD JWCOLOR_MIDDLE = D3DCOLOR_XRGB(60, 60, 60);
 	static const DWORD JWCOLOR_DARK = D3DCOLOR_XRGB(40, 40, 40);
 	static const DWORD JWCOLOR_HIGHLIGHT = D3DCOLOR_XRGB(40, 80, 255);
 	static const DWORD JWCOLOR_FONT = D3DCOLOR_XRGB(255, 255, 255);
@@ -107,6 +108,7 @@ namespace JW_GUI
 		GUINotCreated,
 		OutterWindowNotCreated,
 		OutterWindowAlreadyExists,
+		InnerWindowNotCreated,
 		// Lock
 		VertexBufferNotLocked,
 		IndexBufferNotLocked,
@@ -119,6 +121,7 @@ namespace JW_GUI
 		// Input is invalid
 		InvalidType,
 		NotEnoughBuffer,
+		FunctionNotDefined,
 	};
 
 	struct Int2
@@ -150,6 +153,16 @@ namespace JW_GUI
 			return Result;
 		}
 
+		Int2& operator-()
+		{
+			Int2& Result = *this;
+
+			Result.x = -Result.x;
+			Result.y = -Result.y;
+
+			return Result;
+		}
+
 		Int2 operator-(Int2& Value)
 		{
 			Int2 Result = *this;
@@ -170,7 +183,27 @@ namespace JW_GUI
 			return Result;
 		}
 
+		Int2& operator-=(const Int2& Value)
+		{
+			Int2& Result = *this;
+
+			Result.x -= Value.x;
+			Result.y -= Value.y;
+
+			return Result;
+		}
+
 		Int2 operator+(Int2& Value)
+		{
+			Int2 Result = *this;
+
+			Result.x += Value.x;
+			Result.y += Value.y;
+
+			return Result;
+		}
+
+		Int2 operator+(const Int2& Value)
 		{
 			Int2 Result = *this;
 

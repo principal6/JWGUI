@@ -40,7 +40,7 @@ void JWShape::MakeRectangle(D3DXVECTOR2 Size, DWORD Color)
 	m_Type = Type::Rectangle;
 	m_Size = Size;
 
-	// Make rectangle from (0, 0) to (Size.x, Size.y)
+	// MakeOutter rectangle from (0, 0) to (Size.x, Size.y)
 	m_Vertices.push_back(VertexShape(0, 0, Color));
 	m_Vertices.push_back(VertexShape(Size.x, 0, Color));
 	m_Vertices.push_back(VertexShape(0, Size.y, Color));
@@ -59,7 +59,7 @@ void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName)
 	m_Type = Type::Rectangle;
 	m_Size = Size;
 
-	// Make rectangle from (0, 0) to (Size.x, Size.y)
+	// MakeOutter rectangle from (0, 0) to (Size.x, Size.y)
 	m_Vertices.push_back(VertexShape(0, 0, 0, 0));
 	m_Vertices.push_back(VertexShape(Size.x, 0, 1, 0));
 	m_Vertices.push_back(VertexShape(0, Size.y, 0, 1));

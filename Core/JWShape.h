@@ -45,7 +45,7 @@ namespace JW_GUI
 		auto JWShape::Create(LPDIRECT3DDEVICE9 pDevice)->Error;
 		void JWShape::Destroy();
 
-		// Make
+		// MakeOutter
 		void JWShape::MakeRectangle(D3DXVECTOR2 Size, DWORD Color);
 		void JWShape::MakeImage(D3DXVECTOR2 Size, WSTRING TextureFileName);
 

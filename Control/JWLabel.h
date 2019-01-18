@@ -7,7 +7,7 @@ namespace JW_GUI
 	class JWLabel final : public JWControl
 	{
 	protected:
-		UNIQUE_PTR<JWShape> m_Shape;
+		UNIQUE_PTR<JWShape> m_BG;
 
 	public:
 		JWLabel() {};
@@ -16,7 +16,7 @@ namespace JW_GUI
 		// Creation
 		auto JWLabel::Create(LPDIRECT3DDEVICE9 pDevice)->Error override;
 
-		// Make
+		// MakeOutter
 		void JWLabel::MakeLabel(WSTRING Text, D3DXVECTOR2 Size, DWORD ColorFont = JWCOLOR_FONT,
 			DWORD ColorBG = JWCOLOR_LABEL) override;
 
@@ -25,7 +25,7 @@ namespace JW_GUI
 
 		// Setter only
 		void JWLabel::SetSize(D3DXVECTOR2 Size) override;
-		void JWLabel::SetPosition(D3DXVECTOR2 Position) override;
+		void JWLabel::SetControlPosition(D3DXVECTOR2 Position) override;
 
 		// Setter
 		void JWLabel::SetBackgroundAlpha(BYTE Alpha) override;
